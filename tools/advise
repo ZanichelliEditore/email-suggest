@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# advise: start the read-only advisor session on this repo, in plan mode with
+# the editing tools and git's writes denied. Written by `faigo apply`; edits
+# here are a reported conflict at the next apply. Run from any directory.
+#
+# The advisor's instructions live outside this repo, so the repo it supervises
+# never carries them: the charter at ~/.claude/commands/advise.md (`/advise`),
+# and this project's brief at ~/.config/faigo/briefs/<repo>.md, appended to
+# the system prompt. Both are installed by the kit's `install-advisor`.
+set -euo pipefail
+
+INSTALL="python3 <kit>/tools/faigo/faigo.py install-advisor <this repo>"
+refuse() { echo "advise: $1" >&2; exit 1; }
+
+# A symlink to this script (say, from ~/bin) still supervises this script's repo.
+SELF=$(readlink -f "$0" 2>/dev/null || realpath "$0")
+REPO=$(git -C "$(dirname "$SELF")" rev-parse --show-toplevel) \
+  || refuse "$(dirname "$SELF") is not inside a git repository (git's reason is above)"
+BRIEF="${ADVISOR_BRIEF:-$HOME/.config/faigo/briefs/$(basename "$REPO").md}"
+CHARTER="$HOME/.claude/commands/advise.md"
+MODEL="${ADVISOR_MODEL:-fable}"
+
+[ -f "$BRIEF" ] || refuse "no brief at $BRIEF; seed it with: $INSTALL"
+[ -f "$CHARTER" ] || refuse "no charter at $CHARTER, so /advise would not exist; install it with: $INSTALL"
+# Read now: a failed read inside exec's arguments would launch with no brief.
+BRIEF_TEXT=$(cat "$BRIEF") || refuse "cannot read $BRIEF"
+
+# The advisor reviews committed state. A dirty tree (untracked files count)
+# usually means a session is mid-task: refuse, and show what is in the way.
+STATUS=$(git -C "$REPO" status --porcelain) || refuse "git status failed in $REPO"
+if [ -n "$STATUS" ]; then
+  git -C "$REPO" status --short >&2
+  refuse "the working tree is not clean; is the builder mid-task? Commit or clean it, then retry"
+fi
+
+cd "$REPO"
+exec claude \
+  --name "Advisor" \
+  --model "$MODEL" \
+  --permission-mode plan \
+  --disallowedTools \
+    Edit Write NotebookEdit \
+    "Bash(git commit *)" "Bash(git push *)" "Bash(git add *)" \
+    "Bash(git checkout *)" "Bash(git reset *)" "Bash(git stash *)" \
+    "Bash(git rebase *)" "Bash(git merge *)" "Bash(git rm *)" "Bash(git mv *)" \
+  --append-system-prompt "$BRIEF_TEXT" \
+  "$@"

@@ -1,0 +1,6 @@
+# Copilot instructions
+
+The contract for this repository is **`AGENTS.md`** (the project map and command
+surface) plus the **`INSTRUCTION.md`** it points to — the four execution principles
+(think before coding, simplicity first, surgical changes, goal-driven execution).
+Follow both.
