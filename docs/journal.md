@@ -27,3 +27,9 @@ stands for. End an entry with the task id it came from.
   `SPEC.md`; once merged it was deleted. `.agent-native-setup.json` still
   has `"first_run_banner": true` after the banner's removal; unverified
   whether an update re-adds the banner. (T-000)
+- A matching rule checked only against the §10 table can still be wrong
+  off the table: the first step 1.2 draft ("any two-letter label") passed
+  every row in a scratch Python model, yet silenced `libero.ot` and
+  `gmail.cm`; `code-reviewer` found it by probing inputs outside the table.
+  When amending §4, probe neighbours of each new row, not just the rows.
+  (Phase 1 plan)

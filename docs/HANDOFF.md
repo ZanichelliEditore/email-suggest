@@ -4,53 +4,47 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-28T12:33:12+02:00`
-- **Describes commit:** `6e0b2c4`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36410420556
-  (jobs `quality` and `checks` both success; observed via the public
-  Actions API, no `gh`).
+- **Written:** `2026-09-28T12:57:41+02:00`
+- **Describes commit:** `<pending>`. **CI:** `<pending>`.
 
-- **Current task:** `T-000` Project design (SPEC) and onboarding,
-  `done (2026-09-28)`. See `docs/tasks/T-000-design-and-onboarding.md`.
+- **Current task:** none. This session ran `/plan Phase 1`: T-001–T-007
+  written, `todo`, approved by the owner 2026-09-28. See the re-plan note
+  in `docs/tasks/PLAN.md` § Phase 1.
 
-- **Next action:** `/plan Phase 1` (SPEC.md §13). There is no `todo` task
-  yet: PLAN.md's Phase 1 still holds the `T-NNN` placeholder row.
+- **Next action:** `/resume`, then T-001 (dev-stack RFC),
+  `docs/tasks/T-001-dev-stack-rfc.md`.
 
 - **Read before anything else:**
-  - The owner may rename the directory `~/Workspace/toy` →
-    `~/Workspace/email-suggest` between sessions; nothing in the repo
-    depends on the path.
-  - Phase 1's first task must be the stack RFC (SPEC §6, §12): no
-    `package.json` or dev dependency before it is Active.
-  - Two §4 trade-offs await the owner's call before Phase 1 code (see
-    Open doubts); `/plan` should surface them.
+  - SPEC §4 step 1.2 is new (owner decision at plan review, 2026-09-28):
+    same name on a TLD ≥2 edits away → `null` (`gmail.it`, `yahoo.fr`);
+    1 edit away → corrected (`gmail.co`, `libero.ot`). §10 gained 12 rows.
+    All 34 rows were checked against a scratch Python model of §4
+    (not committed; T-007's vitest table is the real proof).
+  - No `package.json` or dev dependency before T-001's RFC is Active.
   - `.github/workflows/quality.yml` carries a local edit (`fd14a91`) to a
     managed file; an `agent-native-setup update` may drop it
     (`docs/journal.md`, 2026-09-28).
 
-- **Reviews:** `code-reviewer`, one full round on `ffdd7ef..HEAD`: 0
-  blockers, 9 should-fix, 10 nits. All SPEC should-fix and nits applied in
-  the handoff commit, except #9 (foreign ccTLD → `.it`), parked as an owner
-  decision. Only mechanism change: the single-label guard in §4 step 2,
-  checked with the `x@con` row; no scoped round run. Dependabot-secret
-  finding is an owner action (below).
+- **Reviews:** `code-reviewer`, full round on the plan + SPEC diff: 1
+  blocker (the first step 1.2 draft silenced `libero.ot`/`gmail.cm`),
+  7 should-fix, 7 nits; blocker fixed by the owner-approved ≥2-edit rule,
+  all should-fix and nits applied. Scoped round on step 1.2: 0 row
+  contradictions, 1 ambiguity (empty last label, `x@proton.`), fixed by
+  wording plus a §10 row; wording only, no mechanism change, so no third
+  round.
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - §4: `gmail.it` / `gmail.ti` → `email.it`; `yahoo.fr` → `yahoo.it`
-    (and other foreign ccTLDs of listed `.it` providers). Keep as
-    documented trade-offs, or add a rule?
   - Repo `ZanichelliEditore/email-suggest` is public; owner said "internal
     use". Confirm intended.
   - Onboarding step 6 (Dependabot security updates) unverified: no `gh`.
-    On by default for public repos; owner to check Settings → Code security.
+    Owner to check Settings → Code security.
   - Dependabot PR #1 red on gitleaks until `GITLEAKS_LICENSE` is also a
     Dependabot secret; then `@dependabot rebase`.
 
-- **Dead ends:** adding the `GITLEAKS_LICENSE` secret without mapping it
-  into the step's `env` (run 36408753886 stayed red).
+- **Dead ends:** step 1.2 as "two-letter last label, `co` exempt"
+  (adopted, then replaced: it silenced 1-edit typos like `libero.ot`).
 
 - **Known red:** none locally. Dependabot PR #1 CI red (see Open doubts);
   not on `main`.

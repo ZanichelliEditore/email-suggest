@@ -75,19 +75,30 @@ match wins.
 
 **Step 1: whole-domain match.**
 1. If the domain is in the known list (§5), return `null`.
-2. Compute the edit distance from the domain to every known domain, using
+2. **Same name, other TLD.** Split the domain at its last dot into a
+   *name* and a *last label* (`posta.istruzione.it` → `posta.istruzione`,
+   `it`). If both are non-empty, the last label is not a key of the TLD
+   typo map (§5), at least one known domain has the same
+   name, and the typed last label is at least 2 edits (the distance of
+   step 3) from the last label of every such known domain, return `null`.
+   A listed provider on a TLD 2 or more edits away is taken as a different,
+   real domain (`gmail.it`, `yahoo.fr`, `hotmail.de`); a TLD 1 edit away is
+   a typo and goes on to step 3 (`gmail.co`, `gmail.cm`, `libero.ot`).
+   Decided by the owner at Phase 1 plan review, 2026-09-28.
+3. Compute the edit distance from the domain to every known domain, using
    Damerau-Levenshtein in its optimal-string-alignment variant: insertion,
    deletion, substitution and a swap of two adjacent characters each cost 1
    (`icolud.com` → `icloud.com` = 1).
-3. Take the closest known domain. Accept it if its distance is within the
+4. Take the closest known domain. Accept it if its distance is within the
    threshold, which depends on the length of the **typed** domain:
    - 6 characters or fewer: at most 1 edit;
    - longer: at most 2 edits (`lgmai.com` → `gmail.com` = 2).
-4. On a tie, the entry earlier in the list wins. The list is ordered by
+5. On a tie, the entry earlier in the list wins. The list is ordered by
    expected popularity.
 
-**Step 2: TLD fix.** Only when step 1 found nothing, and only for a domain
-with at least two labels (`x@con` gets no suggestion). If the domain's last
+**Step 2: TLD fix.** Only when step 1 found nothing, and only when the
+name and last label of step 1.2 are both non-empty (`x@con` gets no
+suggestion). If the domain's last
 label is a key of the TLD typo map (§5), replace it with the mapped value.
 The map is explicit, not a distance search, because many real TLDs sit one
 edit apart (`.co`, `.cm`, `.om`, `.de`) and must never be "corrected".
@@ -95,16 +106,9 @@ edit apart (`.co`, `.cm`, `.om`, `.de`) and must never be "corrected".
 **Known trade-offs**, accepted because suggestions are dismissable:
 - A real but unlisted domain close to a listed one gets a suggestion
   (`libro.it` → `libero.it`).
-- A wrong TLD on a listed provider can land on a different listed provider
-  rather than the intended one (`gmail.it` → `email.it`, since `gmail.it` to
-  `gmail.com` is 3 edits; likewise `gmail.ti` → `email.it`).
-- A real foreign country-code domain of a listed `.it` provider, longer than
-  6 characters, is 2 edits from the `.it` entry and gets it suggested
-  (`yahoo.fr` → `yahoo.it`, `hotmail.de` → `hotmail.it`,
-  `outlook.es` → `outlook.it`).
-
-The last two trade-offs are open for the owner to confirm or rule out
-before Phase 1's implementation; they are not in the §10 table.
+- A typo-map TLD on a listed provider can land on a different listed
+  provider rather than the intended one: `gmail.ti` → `email.it` (2 edits).
+  Step 1.2 skips typo-map keys, and `gmail.ti` to `gmail.com` is 3 edits.
 
 Cost: 32 domains of short strings per call, microseconds. Safe to call
 on every keystroke.
@@ -228,18 +232,30 @@ Docker is the only local path; Node is not needed on the host.
 | `a@b@lgmai.com` | `a@b@gmail.com` (split on the last `@`) |
 | `x@studio-rossi.ti` | `x@studio-rossi.it` (step 2) |
 | `x@libro.it` | `x@libero.it` (documented trade-off, §4) |
+| `x@gmail.ti` | `x@email.it` (documented trade-off, §4) |
+| `x@gmail.co` | `x@gmail.com` (TLD 1 edit away, step 1.3) |
+| `x@gmail.cm` | `x@gmail.com` (TLD 1 edit away, step 1.3) |
+| `x@libero.ot` | `x@libero.it` (TLD 1 edit away, step 1.3) |
+| `x@gmail.cim` | `x@gmail.com` (TLD 1 edit away, step 1.3) |
+| `x@proton.` | `x@proton.me` (empty last label: step 1.2 skipped) |
+| `x@ti.it` | `x@tim.it` (tie with `tin.it`: earlier entry wins) |
 | `x@gmail.com` | `null` |
 | `  x@GMAIL.COM  ` | `null` |
 | `x@tin.it` | `null` |
 | `x@mail.com` | `null` |
 | `x@studio-rossi.co` | `null` (real TLD) |
 | `x@studio-rossi.it` | `null` |
-| `x@gmx.de` | `null` (6 characters, 2 edits from `gmx.net`) |
+| `x@gmx.de` | `null` (step 1.2) |
+| `x@ali.it` | `null` (6 characters, 2 edits from `alice.it`) |
+| `x@gmail.it` | `null` (step 1.2) |
+| `x@yahoo.fr` | `null` (step 1.2) |
+| `x@hotmail.de` | `null` (step 1.2) |
 | `x@con` | `null` (single label) |
 | `""`, `mario`, `@gmail.com`, `mario@` | `null` |
 
 Plus the list guards of §5, and unit tests of the distance function
-(empty strings, identical strings, a single swap).
+(both strings empty, one empty, identical strings, a single swap, and
+`ca`/`abc` = 3, which tells OSA from unrestricted Damerau-Levenshtein).
 
 **Integration: pack smoke test.** `npm pack`, install the tarball into a
 scratch directory inside the container, import `suggest` and call it once,
