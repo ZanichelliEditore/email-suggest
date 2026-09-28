@@ -18,8 +18,14 @@ Ordered task list. One task = one session (SPEC.md
 - The owner reviews every plan before its first task.
 
 **Sizing calibration:** tasks that overflowed: 0 · tasks split after the
-fact: 0 · sessions that ran two tasks: 0 · split points set at planning and
+fact: 0 · sessions that ran two tasks: 1 · split points set at planning and
 taken: 0 · split points set at planning and not needed: 0.
+
+## Phase 0: setup
+
+| Id | Title | Type | Depends | Acceptance | Status |
+|---|---|---|---|---|---|
+| T-000 | Project design (SPEC) and onboarding | plan | none | SPEC.md reviewed by owner; CI green on GitHub for pushed `main` | done (2026-09-28) |
 
 ## Phase 1: <name>
 

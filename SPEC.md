@@ -25,8 +25,9 @@ In scope:
 
 Non-goals (v1):
 - **No syntax validation.** The form's `type="email"` or the team's own
-  validator owns that. Malformed input yields "no suggestion", never an
-  error.
+  validator owns that. Malformed input never causes an error. Since nothing
+  checks syntax, a malformed address may still get a domain suggestion
+  (`mario rossi@gmial.com` → `mario rossi@gmail.com`).
 - **No blocking.** A typo produces a suggestion only; the user may keep
   what they typed. The library never declares an address invalid.
 - No UI component: each team renders its own hint.
@@ -46,7 +47,8 @@ export interface Suggestion {
 export function suggest(email: string): Suggestion | null;
 ```
 
-This is the package's only export.
+`suggest` is the package's only runtime export; `Suggestion` is its only
+type export.
 
 - The input is trimmed, then split on the **last** `@`. If there is no `@`,
   or the local part or domain is empty, the result is `null`.
@@ -84,7 +86,8 @@ match wins.
 4. On a tie, the entry earlier in the list wins. The list is ordered by
    expected popularity.
 
-**Step 2: TLD fix.** Only when step 1 found nothing. If the domain's last
+**Step 2: TLD fix.** Only when step 1 found nothing, and only for a domain
+with at least two labels (`x@con` gets no suggestion). If the domain's last
 label is a key of the TLD typo map (§5), replace it with the mapped value.
 The map is explicit, not a distance search, because many real TLDs sit one
 edit apart (`.co`, `.cm`, `.om`, `.de`) and must never be "corrected".
@@ -94,15 +97,22 @@ edit apart (`.co`, `.cm`, `.om`, `.de`) and must never be "corrected".
   (`libro.it` → `libero.it`).
 - A wrong TLD on a listed provider can land on a different listed provider
   rather than the intended one (`gmail.it` → `email.it`, since `gmail.it` to
-  `gmail.com` is 3 edits).
+  `gmail.com` is 3 edits; likewise `gmail.ti` → `email.it`).
+- A real foreign country-code domain of a listed `.it` provider, longer than
+  6 characters, is 2 edits from the `.it` entry and gets it suggested
+  (`yahoo.fr` → `yahoo.it`, `hotmail.de` → `hotmail.it`,
+  `outlook.es` → `outlook.it`).
 
-Cost: about 50 domains of short strings per call, microseconds. Safe to call
+The last two trade-offs are open for the owner to confirm or rule out
+before Phase 1's implementation; they are not in the §10 table.
+
+Cost: 32 domains of short strings per call, microseconds. Safe to call
 on every keystroke.
 
 ## 5. Lists
 
-Both lists are typed arrays in the source, shipped in the package, and
-change only by release:
+Both lists are typed constants in the source (an array and a map), shipped
+in the package, and change only by release:
 - `src/domains.ts`: the known domains, ordered by priority;
 - `src/tld-typos.ts`: the TLD typo map.
 
@@ -132,7 +142,8 @@ users are not told to switch to Gmail.
 - No list entry is ever suggested a correction.
 - No key of the TLD typo map is a real TLD, checked against a hard-coded
   set of real TLDs near the keys (at least `co`, `cm`, `om`, `de`, `io`,
-  `in`, `is`, `nl`, `ne`, `ec`, `er`).
+  `in`, `is`, `nl`, `ne`, `ec`, `er`). No current key collides; the guard
+  protects future PRs.
 
 **Changing a list:** a PR adding the entry plus a test case (`typo →
 domain`), released as a patch version. The README explains how.
@@ -166,8 +177,10 @@ Docker is the only local path; Node is not needed on the host.
 - `Dockerfile`: a `node:22-alpine` dev image.
 - `compose.yaml`: one service `dev`, with the repo mounted and
   `node_modules` in a named volume.
-- `make test`, `make build`, `make lint`, `make format` and `make shell`
-  each run `docker compose run --rm dev …`, each with a one-line `make help`
+- The existing `make lint`, `make format` and `make test` targets keep their
+  ruff and Python steps for `tools/` and gain the JS steps, which run through
+  `docker compose run --rm dev …`. New targets `make build` and `make shell`
+  run through the same container. Every target keeps a one-line `make help`
   description.
 - The pre-commit hook runs Biome through the same container.
 
@@ -175,14 +188,17 @@ Docker is the only local path; Node is not needed on the host.
 
 - `make quality` gains the JS gate next to the existing ruff and gitleaks
   steps: Biome check, typecheck, tests, and the pack smoke test (§10).
-- GitHub Actions runs `make quality` on every push, through the same Docker
+- GitHub Actions runs `make quality` on every push to `main` and on every
+  pull request (the existing `quality.yml` triggers), through the same Docker
   path as local. The Node version is pinned in one place: the Dockerfile.
 
 ## 9. Publishing
 
 - Registry: Zanichelli's Gemfury npm registry.
-- Only CI publishes, never a laptop. A tag `vX.Y.Z` runs the publish job:
-  1. fail unless the tag equals `package.json` `version`;
+- Only CI publishes, never a laptop. Pushing a tag matching `v*.*.*` runs
+  the publish job:
+  1. fail unless the tag without its leading `v` equals `package.json`
+     `version`;
   2. `make quality`;
   3. build;
   4. `npm publish` to Gemfury.
@@ -207,6 +223,10 @@ Docker is the only local path; Node is not needed on the host.
 | `x@yaho.it` | `x@yahoo.it` |
 | `x@gmail.con` | `x@gmail.com` |
 | `x@studio-rossi.con` | `x@studio-rossi.com` |
+| `x@gmal.co` | `x@gmail.com` (7 characters, 2 edits) |
+| `x@me.co` | `x@me.com` (5 characters, 1 edit) |
+| `a@b@lgmai.com` | `a@b@gmail.com` (split on the last `@`) |
+| `x@studio-rossi.ti` | `x@studio-rossi.it` (step 2) |
 | `x@libro.it` | `x@libero.it` (documented trade-off, §4) |
 | `x@gmail.com` | `null` |
 | `  x@GMAIL.COM  ` | `null` |
@@ -214,6 +234,8 @@ Docker is the only local path; Node is not needed on the host.
 | `x@mail.com` | `null` |
 | `x@studio-rossi.co` | `null` (real TLD) |
 | `x@studio-rossi.it` | `null` |
+| `x@gmx.de` | `null` (6 characters, 2 edits from `gmx.net`) |
+| `x@con` | `null` (single label) |
 | `""`, `mario`, `@gmail.com`, `mario@` | `null` |
 
 Plus the list guards of §5, and unit tests of the distance function
@@ -249,24 +271,27 @@ with its lists and unit tests is in place, with the JS gate part of
 `make quality`.
 
 **Acceptance:** on a host without Node, `make quality` passes, running the
-JS gate inside Docker, and the tests include every row of the §10 table and
-every §5 guard.
+JS gate inside Docker; the tests include every row of the §10 table, every
+§5 guard and the distance-function tests; `make build` and `make shell` run
+through the container; the pre-commit hook runs Biome.
 
 ### Phase 2: distribution
 
 CI runs on every push, the pack smoke test is in the gate, and a version tag
 publishes to Gemfury.
 
-**Acceptance:** CI is green on GitHub for the tagged commit. `0.1.0` installs
-from Gemfury into a scratch Vite app, and in that app
-`suggest("mario@lgmai.com")` returns `{ address: "mario@gmail.com", domain:
-"gmail.com" }`.
+**Acceptance:** CI is green on GitHub for the tagged commit. Inside the dev
+container, `0.1.0` installs from Gemfury into a scratch Vite project,
+`vite build` succeeds, and a script in that project checks that
+`suggest("mario@lgmai.com")` deep-equals `{ address: "mario@gmail.com",
+domain: "gmail.com" }`.
 
 ## 14. Session discipline
 
 The rules in `AGENTS.md` apply in full. Project-specific additions:
 
-- Every `make` command a session runs goes through Docker (§7). A session
+- Every JS/Node step goes through Docker (§7); the Python tooling targets
+  (`tools/`, `install`, `rfc-sync`, `gitleaks`) stay on the host. A session
   that finds itself running `npm` or `node` on the host has stepped off the
   path: stop and fix the make target instead.
 - A change to a list (§5) always ships with its test row in the same commit.
