@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 1
-- **Status:** todo
+- **Status:** done (2026-09-28)
 - **Depends on:** T-001
 - **Created:** 2026-09-28
 
@@ -47,18 +47,36 @@ later JS step runs through; `make shell` opens it.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `Dockerfile` (RFC Decision 3 pin), `compose.yaml` (service `dev`, repo at
+  `/app`, `node_modules` named volume), `.dockerignore` (`*`: nothing is
+  copied), `.gitignore` `node_modules/`, `make shell`, Dependabot `docker`
+  entry. One commit, `T-002: Docker dev environment` (hash in HANDOFF.md).
+- Run user: **host UID:GID**, not `node`; why in `docs/journal.md`
+  (2026-09-28, T-002) and the comments at `Dockerfile:5-10`,
+  `compose.yaml:4-6`. So `/app/node_modules` is `0777`, not owned by the
+  run user as "In scope" said: that UID is unknown at build time.
+- Acceptance, run 2026-09-28: `docker compose run --rm -T dev node --version`
+  → `v24.21.0`; `make shell` (under a pty) → `/app $` prompt, `node
+  --version` `v24.21.0`, `id -u` `1000`; `make help` → `shell  open a shell
+  in the dev container`; `make quality` green. Extra probes: a file written
+  in `/app` is `andrea:andrea` on the host; `HOST_UID=1234` writes the
+  volume and `$HOME`.
+- `docs/improvements.md` digest-grouping entry resolved and removed: the
+  group has no `update-types` filter, so digest refreshes land in it
+  (`.github/dependabot.yml`, comment above the `docker` entry).
+- No automated test: acceptance is the commands above.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- Dependabot `docker` grouping is reasoned, not observed: the first weekly
+  run confirms it.
+- `HOME=/tmp` plus `--rm` drops npm's cache after every run; T-003 judges
+  whether `npm ci` wants a cache volume.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done)

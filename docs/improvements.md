@@ -12,5 +12,4 @@ that needs a real decision into an RFC in `docs/rfc/proposed/`.
 
 - [a1b2c3d · YYYY-MM-DD] _Add the first gap or deferred idea here._
 - [5d46e69 · 2026-09-28] docs/rfc/active/2026-09-28-dev-stack.md:125 — arm64 bullet says 'all three tools' publish arm64 builds; the native binaries are TypeScript, Biome and rolldown (vitest's native part), not vitest itself. Wording only (T-001 scoped rfc-reviewer round, parked).
-- [5d46e69 · 2026-09-28] T-002: when writing the docker Dependabot group's update-types, check that digest refreshes land in the same grouped PR as minor/patch updates (docs/rfc/active/2026-09-28-dev-stack.md Decision 4; T-001 scoped rfc-reviewer round, parked).
 - [49d4081 · 2026-09-28] T-003: confirm whether Dependabot's ignore of version-update:semver-major also suppresses security-update PRs; if so, record in docs/rfc/active/2026-09-28-dev-stack.md ('Majors are manual') that a fix needing a major arrives only as an alert (T-001 scoped rfc-reviewer round, handed to T-003).

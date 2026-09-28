@@ -8,3 +8,5 @@ __pycache__/
 .claude/settings.local.json
 # the compaction marker: written by the PreCompact hook, cleared by /handoff
 .claude/.compacted
+# the mount point of the container's node_modules volume (compose.yaml)
+node_modules/

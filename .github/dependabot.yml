@@ -7,3 +7,17 @@ updates:
     groups:
       dependencies:
         patterns: ["*"]
+  # Majors amend docs/rfc/active/2026-09-28-dev-stack.md (Decision 4). With
+  # majors ignored, a group with no update-types filter holds every
+  # remaining update. For the `24-alpine` tag every tag change is a major,
+  # so in practice the group carries digest refreshes only.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      docker:
+        patterns: ["*"]

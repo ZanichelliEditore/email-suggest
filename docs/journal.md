@@ -48,3 +48,14 @@ stands for. End an entry with the task id it came from.
 - `make rfc-sync` exits 1 whenever it moves an RFC, by design (it asks you
   to review and `git add` the move); a non-zero exit there is not a
   failure. (T-001)
+- The dev container runs as the host's UID:GID (`compose.yaml` `user:`,
+  exported by the Makefile), not the image's fixed `node` user (UID 1000):
+  on a Linux host whose UID is not 1000, `node` could not write the
+  bind-mounted repo. So `/app/node_modules` is `0777` in the image rather
+  than "owned by the run user" (unknown at build time), and `HOME=/tmp`
+  gives a UID with no passwd entry a writable home. Probed with
+  `HOST_UID=1234`: volume and `$HOME` writable. (T-002)
+- A named volume mounted inside a bind mount makes Docker create the
+  mount point on the host, root-owned: `./node_modules/` appears empty and
+  owned by root after the first `docker compose run`. It is gitignored;
+  `git clean` can still remove it. (T-002)

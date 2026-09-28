@@ -4,50 +4,47 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-28T14:16:15+02:00`
-- **Describes commit:** `1ca6a0f`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36420813015
-  (jobs `quality` and `checks` both success; observed via the public
-  Actions API, no `gh`).
+- **Written:** `2026-09-28T17:03:57+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
+  `<pending>`
 
-- **Current task:** T-001 (dev-stack RFC), `done (2026-09-28)`. See
-  `docs/tasks/T-001-dev-stack-rfc.md` § Done.
+- **Current task:** T-002 (Docker dev environment), `done (2026-09-28)`.
+  See `docs/tasks/T-002-docker-dev-env.md` § Done.
 
-- **Next action:** `/resume`, then T-002 (Docker dev environment),
-  `docs/tasks/T-002-docker-dev-env.md`.
+- **Next action:** `/resume`, then T-003 (JS toolchain; Biome in the gate
+  and the pre-commit hook), `docs/tasks/T-003-js-toolchain-biome.md`.
 
 - **Read before anything else:**
-  - The RFC `docs/rfc/active/2026-09-28-dev-stack.md` is the contract for
-    T-002 to T-004: exact pins (TypeScript 7.0.2, vitest 5.0.2, Biome
-    2.5.14), committed lockfile, `npm ci` only, `.npmrc` with
-    `save-exact` and `ignore-scripts`, no lifecycle or `pre`/`post`
-    scripts in `package.json`.
-  - Owner chose **Node 24** at acceptance (2026-09-28). Pin:
-    `node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1`
-    (Node 24.21.0). SPEC §7 and T-002's acceptance now check `v24.`.
-  - RFC Decision 4 binds T-002/T-003: their Dependabot `docker` and `npm`
-    entries ignore `version-update:semver-major`, minor/patch grouped. Two
-    checks for them are in `docs/improvements.md` (digest-refresh grouping
-    for T-002; whether the major ignore suppresses security PRs for
-    T-003); neither is in their task files.
+  - Every JS step runs through `docker compose run --rm dev …` (SPEC §7).
+    The container runs as the host UID:GID: the Makefile exports
+    `HOST_UID`/`HOST_GID` globally, and `compose.yaml` falls back to 1000.
+    Why: `docs/journal.md` 2026-09-28 (T-002).
+  - `HOME=/tmp` in the image and `--rm` on every run: npm's cache does not
+    survive a run. T-003 decides whether `npm ci` needs a cache volume.
+  - `node_modules` lives in the named volume `email-suggest_node_modules`.
+    The empty root-owned `./node_modules/` on the host is Docker's mount
+    point and is gitignored.
+  - T-003 must add the `npm` Dependabot entry the same way as `docker`
+    (`.github/dependabot.yml`: ignore semver-major, one group with no
+    `update-types` filter), and settle `docs/improvements.md`'s entry on
+    whether the major ignore suppresses security PRs.
 
-- **Reviews:** `rfc-reviewer` full round: 0 blockers, 4 should-fix,
-  3 nits, all resolved. Scoped round: 1 fail-open (`ignore-scripts` skips
-  `pre`/`post` hooks) and 1 false claim, resolved; 1 check handed to
-  T-003; 2 nits parked. Node 24 switch after acceptance: version swap
-  only, no third round (rule 9). `code-reviewer` on `5d46e69..49d4081`:
-  0 blockers, 3 should-fix, 3 nits; all applied in the handoff commit
-  except the nit on T-001's own scope line, left as the task as planned.
+- **Reviews:** `code-reviewer`, one full round on the T-002 diff:
+  0 blockers, 2 should-fix, 3 nits. Applied: the run-user decision is
+  recorded (journal and task file); the improvements digest-grouping entry
+  is closed; the Dependabot comment now says "digest refreshes only".
+  Handed to T-003: the npm cache nit. Dismissed: the Makefile global
+  `export` nit (intended, T-003's targets need it). Every fix changed
+  wording only, not a mechanism, so no scoped round (rule 9).
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - Repo `ZanichelliEditore/email-suggest` is public; owner said "internal
-    use". Confirm intended.
-  - Onboarding step 6 (Dependabot security updates) unverified: no `gh`.
-    Owner to check Settings → Code security.
-  - arm64 unverified: spikes ran on x86_64 only, no emulation on this host.
+  - Dependabot `docker` grouping is reasoned, not observed: the first
+    weekly run confirms it.
+  - Carried from T-001: the repo is public although the owner said
+    "internal use"; Dependabot security updates are unverified (no `gh`);
+    arm64 is unverified (x86_64 host only).
 
 - **Dead ends:** none.
 
@@ -55,4 +52,5 @@
 
 - **Checkpoint:** `make quality`: ruff "All checks passed!", 2 files
   already formatted, `tools/checks` 5 tests OK, gitleaks (tree) Passed,
-  gitleaks (history) Passed. No project tests yet.
+  gitleaks (history) Passed. T-002 acceptance by hand:
+  `docker compose run --rm -T dev node --version` printed `v24.21.0`.

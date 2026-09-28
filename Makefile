@@ -36,3 +36,12 @@ quality: gitleaks
 gitleaks: ## secret scan of the staged diff and of every commit, at the gitleaks pinned in .pre-commit-config.yaml
 	pre-commit run gitleaks --all-files
 	pre-commit run gitleaks-history --hook-stage manual
+
+.PHONY: shell
+
+# The dev container runs as the host user (compose.yaml).
+export HOST_UID := $(shell id -u)
+export HOST_GID := $(shell id -g)
+
+shell: ## open a shell in the dev container
+	docker compose run --rm dev
