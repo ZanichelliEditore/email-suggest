@@ -5,8 +5,11 @@
 "none".*
 
 - **Written:** `2026-09-28T12:33:12+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `6e0b2c4`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36410420556
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`).
 
 - **Current task:** `T-000` Project design (SPEC) and onboarding,
   `done (2026-09-28)`. See `docs/tasks/T-000-design-and-onboarding.md`.
