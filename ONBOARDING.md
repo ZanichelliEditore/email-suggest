@@ -1,4 +1,4 @@
-# First-run setup — toy
+# First-run setup — email-suggest
 
 This repo was scaffolded by the `agent-native-setup` wizard — an agent-native setup. The
 tooling is in place but hasn't been activated yet; the steps below are the

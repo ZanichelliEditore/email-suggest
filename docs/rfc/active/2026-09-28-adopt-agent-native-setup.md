@@ -2,7 +2,7 @@
 
 - **Status:** Active
 - **Date:** 2026-09-28
-- **Author:** toy team
+- **Author:** email-suggest team
 - [ ] Implemented
 
 ## Context

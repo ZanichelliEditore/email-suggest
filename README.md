@@ -1,4 +1,4 @@
-# toy
+# email-suggest
 
 ## Getting started
 

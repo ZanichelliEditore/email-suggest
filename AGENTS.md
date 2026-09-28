@@ -5,7 +5,7 @@
 > it and remove this block.
 <!-- /agent-native-setup:first-run -->
 
-# toy — Agent Contract
+# email-suggest — Agent Contract
 
 **Read [`INSTRUCTION.md`](./INSTRUCTION.md) first** — the standard engineering contract (the four execution principles, when to write an RFC, how this repo stays agent-native), kept current by `agent-native-setup update`. This file is the project-specific map; `CLAUDE.md`, `GEMINI.md`,
 `.cursor/rules/`, and `.github/copilot-instructions.md` all point here.
