@@ -7,7 +7,7 @@
 - **Created:** 2026-09-28
 
 ## Goal
-A `node:22-alpine` dev container, driven by `compose.yaml`, that every
+A `node:24-alpine` dev container, driven by `compose.yaml`, that every
 later JS step runs through; `make shell` opens it.
 
 ## In scope
@@ -40,7 +40,7 @@ later JS step runs through; `make shell` opens it.
 
 ## Acceptance
 `make shell` opens a shell in the container;
-`docker compose run --rm -T dev node --version` prints `v22.`;
+`docker compose run --rm -T dev node --version` prints `v24.`;
 `make help` lists `shell`; `make quality` green.
 
 ---

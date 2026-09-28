@@ -2,7 +2,7 @@
 
 - **Type:** plan
 - **Phase:** 1
-- **Status:** todo
+- **Status:** doing (2026-09-28)
 - **Depends on:** none
 - **Created:** 2026-09-28
 

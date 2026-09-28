@@ -178,7 +178,7 @@ domain`), released as a patch version. The README explains how.
 
 Docker is the only local path; Node is not needed on the host.
 
-- `Dockerfile`: a `node:22-alpine` dev image.
+- `Dockerfile`: a `node:24-alpine` dev image.
 - `compose.yaml`: one service `dev`, with the repo mounted and
   `node_modules` in a named volume.
 - The existing `make lint`, `make format` and `make test` targets keep their
