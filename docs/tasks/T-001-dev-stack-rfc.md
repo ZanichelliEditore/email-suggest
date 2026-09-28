@@ -2,7 +2,7 @@
 
 - **Type:** plan
 - **Phase:** 1
-- **Status:** doing (2026-09-28)
+- **Status:** done (2026-09-28)
 - **Depends on:** none
 - **Created:** 2026-09-28
 
@@ -48,18 +48,32 @@ is flipping the RFC's Status.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `49d4081`: RFC `docs/rfc/active/2026-09-28-dev-stack.md`, Status
+  Active, with both rfc-reviewer rounds and the owner's acceptance
+  (2026-09-28, Node 24 chosen) recorded in its "Review and acceptance".
+  SPEC §7 and T-002's acceptance now say `node:24-alpine` / `v24.`;
+  `docs/architecture/overview.md` gained the dev-stack entry.
+- Handoff commit: `code-reviewer` fixes in the RFC (vitest's real Node
+  range, stale "node:24 as alternative" line, wording) and the T-003
+  Dependabot check parked in `docs/improvements.md`.
+- No project tests: `plan` task. Proof is the acceptance grep
+  (`grep -l '^- \*\*Status:\*\* Active' docs/rfc/active/*dev-stack*.md`
+  matches) and the out-of-repo spike on both Node digests, recorded in
+  the RFC's Decision.
+- This task's own scope line (above) still says `node:22-alpine`: it is
+  the task as planned; the RFC and the PLAN note record the change.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- arm64 is unverified: the spike ran on x86_64 only (no emulation on
+  this host). First arm64 contributor confirms.
+- Whether Dependabot's major-version ignore also suppresses security PRs:
+  handed to T-003 via `docs/improvements.md`, not in T-003's task file.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

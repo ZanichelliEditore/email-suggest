@@ -33,3 +33,18 @@ stands for. End an entry with the task id it came from.
   `gmail.cm`; `code-reviewer` found it by probing inputs outside the table.
   When amending §4, probe neighbours of each new row, not just the rows.
   (Phase 1 plan)
+- Adding `GITLEAKS_LICENSE` as a Dependabot secret fixed Dependabot PR #1:
+  after `@dependabot rebase`, run 36414045331 went green and the owner
+  merged it (`5d46e69`). Confirms the Dependabot-secrets entry above.
+  (T-001)
+- npm's `ignore-scripts=true` is silent and wider than install scripts: it
+  also skips the package's own `prepack`/`prepublishOnly` and the
+  `pre`/`post` hooks of any script run by name. Anything that must run
+  belongs in a `make` target, not in `package.json` scripts. (T-001)
+- A Docker Hub tag's multi-arch index digest comes from the registry API
+  without `docker pull`: token from `auth.docker.io`, then a `HEAD` on
+  `/v2/library/node/manifests/<tag>` with the OCI index `Accept` header;
+  `docker-content-digest` is the pin. (T-001)
+- `make rfc-sync` exits 1 whenever it moves an RFC, by design (it asks you
+  to review and `git add` the move); a non-zero exit there is not a
+  failure. (T-001)

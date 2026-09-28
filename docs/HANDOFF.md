@@ -4,38 +4,38 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-28T12:57:41+02:00`
-- **Describes commit:** `f4080d4`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36412814797
-  (jobs `quality` and `checks` both success; observed via the public
-  Actions API, no `gh`).
+- **Written:** `2026-09-28T14:16:15+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
+  `<pending>`.
 
-- **Current task:** none. This session ran `/plan Phase 1`: T-001–T-007
-  written, `todo`, approved by the owner 2026-09-28. See the re-plan note
-  in `docs/tasks/PLAN.md` § Phase 1.
+- **Current task:** T-001 (dev-stack RFC), `done (2026-09-28)`. See
+  `docs/tasks/T-001-dev-stack-rfc.md` § Done.
 
-- **Next action:** `/resume`, then T-001 (dev-stack RFC),
-  `docs/tasks/T-001-dev-stack-rfc.md`.
+- **Next action:** `/resume`, then T-002 (Docker dev environment),
+  `docs/tasks/T-002-docker-dev-env.md`.
 
 - **Read before anything else:**
-  - SPEC §4 step 1.2 is new (owner decision at plan review, 2026-09-28):
-    same name on a TLD ≥2 edits away → `null` (`gmail.it`, `yahoo.fr`);
-    1 edit away → corrected (`gmail.co`, `libero.ot`). §10 gained 12 rows.
-    All 34 rows were checked against a scratch Python model of §4
-    (not committed; T-007's vitest table is the real proof).
-  - No `package.json` or dev dependency before T-001's RFC is Active.
-  - `.github/workflows/quality.yml` carries a local edit (`fd14a91`) to a
-    managed file; an `agent-native-setup update` may drop it
-    (`docs/journal.md`, 2026-09-28).
+  - The RFC `docs/rfc/active/2026-09-28-dev-stack.md` is the contract for
+    T-002 to T-004: exact pins (TypeScript 7.0.2, vitest 5.0.2, Biome
+    2.5.14), committed lockfile, `npm ci` only, `.npmrc` with
+    `save-exact` and `ignore-scripts`, no lifecycle or `pre`/`post`
+    scripts in `package.json`.
+  - Owner chose **Node 24** at acceptance (2026-09-28). Pin:
+    `node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1`
+    (Node 24.21.0). SPEC §7 and T-002's acceptance now check `v24.`.
+  - RFC Decision 4 binds T-002/T-003: their Dependabot `docker` and `npm`
+    entries ignore `version-update:semver-major`, minor/patch grouped. Two
+    checks for them are in `docs/improvements.md` (digest-refresh grouping
+    for T-002; whether the major ignore suppresses security PRs for
+    T-003); neither is in their task files.
 
-- **Reviews:** `code-reviewer`, full round on the plan + SPEC diff: 1
-  blocker (the first step 1.2 draft silenced `libero.ot`/`gmail.cm`),
-  7 should-fix, 7 nits; blocker fixed by the owner-approved ≥2-edit rule,
-  all should-fix and nits applied. Scoped round on step 1.2: 0 row
-  contradictions, 1 ambiguity (empty last label, `x@proton.`), fixed by
-  wording plus a §10 row; wording only, no mechanism change, so no third
-  round.
+- **Reviews:** `rfc-reviewer` full round: 0 blockers, 4 should-fix,
+  3 nits, all resolved. Scoped round: 1 fail-open (`ignore-scripts` skips
+  `pre`/`post` hooks) and 1 false claim, resolved; 1 check handed to
+  T-003; 2 nits parked. Node 24 switch after acceptance: version swap
+  only, no third round (rule 9). `code-reviewer` on `5d46e69..49d4081`:
+  0 blockers, 3 should-fix, 3 nits; all applied in the handoff commit
+  except the nit on T-001's own scope line, left as the task as planned.
 
 - **Proposed plan changes:** none.
 
@@ -44,14 +44,11 @@
     use". Confirm intended.
   - Onboarding step 6 (Dependabot security updates) unverified: no `gh`.
     Owner to check Settings → Code security.
-  - Dependabot PR #1 red on gitleaks until `GITLEAKS_LICENSE` is also a
-    Dependabot secret; then `@dependabot rebase`.
+  - arm64 unverified: spikes ran on x86_64 only, no emulation on this host.
 
-- **Dead ends:** step 1.2 as "two-letter last label, `co` exempt"
-  (adopted, then replaced: it silenced 1-edit typos like `libero.ot`).
+- **Dead ends:** none.
 
-- **Known red:** none locally. Dependabot PR #1 CI red (see Open doubts);
-  not on `main`.
+- **Known red:** none.
 
 - **Checkpoint:** `make quality`: ruff "All checks passed!", 2 files
   already formatted, `tools/checks` 5 tests OK, gitleaks (tree) Passed,
