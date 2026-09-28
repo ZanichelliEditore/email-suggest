@@ -5,7 +5,11 @@
 "none".*
 
 - **Written:** `2026-09-28T12:57:41+02:00`
-- **Describes commit:** `<pending>`. **CI:** `<pending>`.
+- **Describes commit:** `f4080d4`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36412814797
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`).
 
 - **Current task:** none. This session ran `/plan Phase 1`: T-001–T-007
   written, `todo`, approved by the owner 2026-09-28. See the re-plan note
