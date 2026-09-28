@@ -5,8 +5,11 @@
 "none".*
 
 - **Written:** `2026-09-28T14:16:15+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `1ca6a0f`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36420813015
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`).
 
 - **Current task:** T-001 (dev-stack RFC), `done (2026-09-28)`. See
   `docs/tasks/T-001-dev-stack-rfc.md` § Done.
