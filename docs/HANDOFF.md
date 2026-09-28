@@ -5,8 +5,13 @@
 "none".*
 
 - **Written:** `2026-09-28T17:03:57+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`
+- **Describes commit:** `6a1712d`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36440794072
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`). Dependabot's first `docker` update job, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36440800072,
+  succeeded and opened no PR (the digest pin is current).
 
 - **Current task:** T-002 (Docker dev environment), `done (2026-09-28)`.
   See `docs/tasks/T-002-docker-dev-env.md` § Done.
