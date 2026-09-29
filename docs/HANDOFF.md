@@ -5,8 +5,13 @@
 "none".*
 
 - **Written:** `2026-09-29T11:29:38+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** filled
-  by the stamp commit.
+- **Describes commit:** `37fae0e`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36549576024
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`). Dependabot's first `npm_and_yarn` update job, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36549584074,
+  succeeded and opened no PR (0 open PRs; the pins are current).
 
 - **Current task:** T-003 (JS toolchain; Biome in the gate and the
   pre-commit hook), `done (2026-09-29)`. See
