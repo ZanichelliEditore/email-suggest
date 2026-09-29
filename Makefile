@@ -1,4 +1,4 @@
-.PHONY: help install lint format format-check typecheck test build quality rfc-sync improvement
+.PHONY: help install lint format format-check typecheck test build pack-smoke quality rfc-sync improvement
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z0-9_.-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/:.*## /  /'
@@ -29,7 +29,22 @@ build: deps ## compile src/ to dist/ (.js + .d.ts)
 	rm -rf dist
 	$(TSC) -p tsconfig.build.json
 
-quality: lint format-check typecheck test ## full local gate
+# SPEC §10: the tarball, not the source. The consumer fixture is copied next to
+# the installed package so both `node` and `tsc` resolve it through its
+# "exports" map and shipped .d.ts. npm reads project config next to the scratch
+# dir's package.json, not the repo's, so --userconfig brings the repo's .npmrc
+# along: update-notifier off, and ignore-scripts as a guard (no lifecycle
+# scripts exist today).
+pack-smoke: build ## pack the tarball, install it in a scratch dir, import, call and typecheck it
+	$(DEV) sh -c 'set -e; d=$$(mktemp -d); \
+	  npm pack --pack-destination "$$d"; \
+	  cp pack-smoke/* "$$d"; cd "$$d"; \
+	  npm install --userconfig /app/.npmrc --no-audit --no-fund ./*.tgz; \
+	  node consumer.ts; \
+	  /app/node_modules/.bin/tsc -p tsconfig.json; \
+	  echo "pack-smoke: import, call and consumer typecheck passed"'
+
+quality: lint format-check typecheck test pack-smoke ## full local gate
 
 rfc-sync: ## move RFCs into the folder matching their Status
 	python3 tools/checks/sync_rfc_status.py

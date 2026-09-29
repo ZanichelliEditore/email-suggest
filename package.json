@@ -9,6 +9,9 @@
     }
   },
   "sideEffects": false,
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "typescript": "7.0.2",

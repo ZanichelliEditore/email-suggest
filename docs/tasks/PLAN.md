@@ -19,7 +19,7 @@ Ordered task list. One task = one session (SPEC.md
 
 **Sizing calibration:** tasks that overflowed: 0 · tasks split after the
 fact: 0 · sessions that ran two tasks: 1 · split points set at planning and
-taken: 0 · split points set at planning and not needed: 3.
+taken: 0 · split points set at planning and not needed: 4.
 
 ## Phase 0: setup
 
@@ -66,7 +66,7 @@ now asks findings resolved.
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
 | T-008 | `suggest` returns null for non-string input; SPEC §3 amendment | build | T-007 | SPEC §3 says `suggest` never throws and returns `null` for any non-string argument; `test/suggest.test.ts` covers `null`, `undefined`, a number and an object; `make quality` green | done (2026-09-29) |
-| T-009 | Pack smoke test in the gate; `"files": ["dist"]` | build | T-008 | `make quality` green and shows `pack-smoke` passing (import, one call, consumer typecheck against the shipped `.d.ts`); with `"files"` removed, `make pack-smoke` fails | todo |
+| T-009 | Pack smoke test in the gate; `"files": ["dist"]` | build | T-008 | `make quality` green and shows `pack-smoke` passing (import, one call, consumer typecheck against the shipped `.d.ts`); with `"files"` removed, `make pack-smoke` fails | done (2026-09-29) |
 | T-010 | CI runs `make quality` through Docker | build | T-009 | `quality.yml`'s `quality` job has one gate step, `make quality`; `make quality` green locally; pushed to `main` (the task ends at the push) | todo |
 | T-011 | Publish workflow; README consumer docs | build | T-010 | T-010's CI run is green on entry; `publish.yml` triggers only on `v*.*.*` and runs tag/version check, `make quality`, build, publish; every `fury.io` hit in tracked files uses `<account>` or `vars.GEMFURY_ACCOUNT`; `make quality` green; pushed (ends at the owner setting `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`) | todo |
 | T-012 | Release `v0.1.0` | build | T-011 | CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag `v0.1.0` pushed after the owner's explicit go (ends at the wait for the publish run) | todo |

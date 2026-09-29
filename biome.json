@@ -6,6 +6,7 @@
     "includes": [
       "src/**",
       "test/**",
+      "pack-smoke/**",
       "*.json",
       "!.*.json",
       "!package-lock.json"

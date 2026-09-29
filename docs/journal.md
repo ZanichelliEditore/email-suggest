@@ -109,3 +109,12 @@ stands for. End an entry with the task id it came from.
   (`{ toString: () => "x@lgmai.com" }`). A plain object can't tell a
   `typeof` guard from a `String(x)` coercion: both give `null` for
   `"[object Object]"`. (T-008 review)
+- `npm install` in a scratch dir reads project config from the scratch
+  dir's own `package.json` folder, not the repo's, so the repo's `.npmrc`
+  is silently dropped. `make pack-smoke` passes it as `--userconfig`.
+  Node 24 runs the `.ts` consumer directly by stripping types, so the
+  fixture needs no compile step. (T-009)
+- A pack smoke test has two halves to probe: drop `"files"` (the import
+  fails at runtime) and ship only `dist/*.js` (the typecheck fails with
+  `TS7016`). A deliberate type error in the consumer alone proves `tsc`
+  runs, not that it reads the shipped `.d.ts`. (T-009 review)

@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-008
 - **Created:** 2026-09-29
 
@@ -49,18 +49,32 @@ typecheck become the next task.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `package.json`: `"files": ["dist"]`. The tarball holds `dist/*.{js,d.ts}`
+  plus npm's defaults (LICENSE, README.md, package.json), 11 files.
+- `Makefile` `pack-smoke` (in `make help`, part of `quality`): build,
+  `npm pack` into a `mktemp -d` scratch dir in the container, copy
+  `pack-smoke/*` there, `npm install ./*.tgz`, `node consumer.ts`, then
+  the repo's `tsc -p` on the scratch `tsconfig.json`.
+- `pack-smoke/consumer.ts`, `package.json`, `tsconfig.json`: the fixture.
+  Biome and the pre-commit `biome` hook now cover `pack-smoke/`.
+- Mutation probes, all caught (`make pack-smoke` exit 2, restored after):
+  - `"files"` removed: `ERR_MODULE_NOT_FOUND` on `dist/index.js`.
+  - `"files": ["dist/*.js"]` (no `.d.ts`): `TS7016` on the import.
+  - `export const wrong: number = suggest("x")` in the consumer: `TS2322`.
+- `make quality` exit 0, with "pack-smoke: import, call and consumer
+  typecheck passed".
+- Commit: see HANDOFF.md "Describes commit".
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- The work was started in an earlier session on 2026-09-29 that stopped
+  before its handoff. This session found it staged, re-ran the gate, the
+  probes and the review; nothing records what that session tried.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).
