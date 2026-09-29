@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 1
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-003
 - **Created:** 2026-09-28
 
@@ -45,18 +45,32 @@ real source that lets typecheck, vitest and `make build` join the gate.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- Commit `T-004: distance.ts; typecheck, vitest and make build join the gate`
+  (hash in `docs/HANDOFF.md`).
+- `src/distance.ts::distance`, OSA; `tsconfig.json` (typecheck `src/` +
+  `test/`, no emit) and `tsconfig.build.json` (emit `src/` only; the split
+  keeps `test/` out of `dist/`).
+- `Makefile`: `typecheck`, `build` (`rm -rf dist` first), `test` gains
+  vitest; `quality` gains `typecheck`.
+- `test/distance.test.ts`, 9 rows: the 6 acceptance cases plus
+  `abc`/`""` = 3, `gmail.cim`/`gmail.com` = 1 (substitution cost) and
+  `ab`/`ba` = 1 (swap at the first position), the last two added at review.
+- Mutation probes, each failing exactly the expected row: swap step
+  removed → `icolud.com`; substitution cost 2 → `gmail.cim`; swap guard
+  `i > 2 && j > 2` → `ab`/`ba`. A type error in `test/` fails
+  `make typecheck` (exit 1).
+- `make build` emits only `dist/distance.js` + `dist/distance.d.ts`.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- CI (`quality.yml`) runs neither tsc nor vitest: green CI does not mean
+  the distance tests passed until Phase 2 moves CI onto `make quality`
+  (same gap as Biome, `docs/improvements.md`).
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

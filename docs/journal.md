@@ -77,3 +77,12 @@ stands for. End an entry with the task id it came from.
 - Dependabot: `ignore` rules apply to security updates as well as version
   updates; GitHub's "security updates are always created regardless of
   `update-types`" note is under `allow`, not `ignore`. (T-003)
+- TypeScript 7 `tsc` with `outDir` and no `rootDir` fails with TS5011
+  ("common source directory … `rootDir` must be explicitly set") yet
+  still emits, into `dist/src/`; `tsconfig.build.json` sets
+  `rootDir: "src"`. Probed with `tsc -p` on the T-004 config. (T-004)
+- The distance cases picked to tell OSA from Levenshtein and from
+  unrestricted Damerau-Levenshtein did not pin the substitution cost or a
+  swap at position 1: a cost-2 substitution and a `i > 2` swap guard both
+  passed them. Mutation-probe each cost of a metric, not just the case
+  that tells variants apart. (T-004)

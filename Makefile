@@ -1,4 +1,4 @@
-.PHONY: help install lint format format-check test quality rfc-sync improvement
+.PHONY: help install lint format format-check typecheck test build quality rfc-sync improvement
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z0-9_.-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/:.*## /  /'
@@ -17,10 +17,19 @@ format-check: deps ## check formatting (read-only)
 	ruff format --check tools/
 	$(BIOME) format
 
-test: ## run tests
-	python3 -m unittest discover -s tools/checks
+typecheck: deps ## type-check src/ and test/
+	$(TSC) -p tsconfig.json
 
-quality: lint format-check test ## full local gate
+test: deps ## run tests
+	python3 -m unittest discover -s tools/checks
+	$(VITEST) run
+
+# dist/ is emptied first so a renamed or deleted source leaves no stale output.
+build: deps ## compile src/ to dist/ (.js + .d.ts)
+	rm -rf dist
+	$(TSC) -p tsconfig.build.json
+
+quality: lint format-check typecheck test ## full local gate
 
 rfc-sync: ## move RFCs into the folder matching their Status
 	python3 tools/checks/sync_rfc_status.py
@@ -54,6 +63,8 @@ DEV := docker compose run --rm -T dev
 # The installed binary, not `npx biome`: with Biome missing from node_modules,
 # npx would fetch npm's unrelated `biome` package and run that instead.
 BIOME := $(DEV) node_modules/.bin/biome
+TSC := $(DEV) node_modules/.bin/tsc
+VITEST := $(DEV) node_modules/.bin/vitest
 
 # node_modules lives in a named volume the host cannot see, so the check runs
 # in the container: `npm ci` only when package.json or the lockfile differ from
