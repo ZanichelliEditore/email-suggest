@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T15:43:44+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<pending>`
+- **Describes commit:** `696118f`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36577302804
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-007 (`suggest()` and Phase 1 close),
   `done (2026-09-29)`. See `docs/tasks/T-007-suggest.md` § Done. **Phase 1
