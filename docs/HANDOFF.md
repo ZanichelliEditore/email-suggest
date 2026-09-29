@@ -9,6 +9,10 @@
   green on `quality.yml`, run
   https://github.com/ZanichelliEditore/email-suggest/actions/runs/36567410361
   (jobs `quality` and `checks` both success; observed with `gh run view`).
+- **After the stamp:** one more HANDOFF-only commit (2026-09-29T14:31+02:00),
+  recording repo security settings the owner asked for after the handoff.
+  `/resume` should expect HEAD two commits after `49f23f8`, both touching
+  only `docs/HANDOFF.md`.
 
 - **Current task:** T-005 (known-domain list, with its guards),
   `done (2026-09-29)`. See `docs/tasks/T-005-domains.md` § Done.
@@ -34,10 +38,15 @@
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - Carried: whether repo security updates are enabled is unverified;
-    `gh` 2.45.0 is now installed and authenticated (2026-09-29), so it can
-    be checked. Dependabot `docker`/`npm` grouping reasoned, not observed; repo
-    is public although the owner said "internal use"; arm64 unverified.
+  - Carried: Dependabot `docker`/`npm` grouping reasoned, not observed;
+    repo is public although the owner said "internal use"; arm64
+    unverified.
+
+- **Repo security (2026-09-29, via `gh`):** Dependabot alerts were
+  already on; the owner had Dependabot security updates, secret scanning
+  and push protection enabled (all were off). At 14:31+02:00: 0 secret-
+  scanning alerts, 0 Dependabot alerts; the first history scan may not
+  have finished. Non-provider patterns and validity checks stay off.
 
 - **Dead ends:** none.
 
