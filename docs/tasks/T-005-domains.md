@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 1
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-004
 - **Created:** 2026-09-28
 
@@ -37,7 +37,16 @@ tested without `suggest()`.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- Commit `T-005: known-domain list with its guards` (hash in
+  `docs/HANDOFF.md`).
+- `src/domains.ts::domains`, `readonly string[]`, 32 entries; diffed
+  mechanically against SPEC.md §5 lines 123-131: same content, same order.
+- `test/domains.test.ts::no domain is listed twice` and
+  `::every domain is lowercase`.
+- Mutation probes, each failing only its own test: `iol.it` replaced by a
+  second `gmail.com` → duplicate test; `iol.it` → `IOL.it` → lowercase test.
+- `make build` emits `dist/domains.js` + `dist/domains.d.ts` beside the
+  distance files.
 
 ## Dead ends
 none
@@ -46,9 +55,7 @@ none
 none
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

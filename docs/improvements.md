@@ -17,3 +17,4 @@ that needs a real decision into an RFC in `docs/rfc/proposed/`.
 - [3eab034 · 2026-09-29] Makefile:69 — --error-on-warnings does not fail on info-level diagnostics; unchecked whether any Biome 2.5 recommended rule defaults to info (T-003 scoped review, parked).
 - [3eab034 · 2026-09-29] Makefile:59-61 — deps comment says 'only when package.json or the lockfile differ' then adds .npmrc and Dockerfile; wording lags DEPS_INPUTS (T-003 scoped review, parked).
 - [30f8fc4 · 2026-09-29] package.json:1 — no "files" field and no .npmignore, so npm pack falls back to .gitignore, which lists dist/: the tarball would ship without dist/ and ./dist/index.js would not resolve; add "files": ["dist"] in the Phase 2 pack-smoke-test task (T-004 review, parked).
+- [eb8ddda · 2026-09-29] test/domains.test.ts:8-12: lowercase guard passes malformed entries (" gmail.com", "gmail.com ", "gmail.com."); SPEC §5 asks only lowercase (T-005 review, parked).
