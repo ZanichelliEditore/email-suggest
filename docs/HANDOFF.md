@@ -5,8 +5,11 @@
 "none".*
 
 - **Written:** `2026-09-29T12:27:26+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `4da9193`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36555738896
+  (jobs `quality` and `checks` both success; observed via the public
+  Actions API, no `gh`). CI does not run tsc or vitest (see below).
 
 - **Current task:** T-004 (`distance.ts`; typecheck, vitest and
   `make build` join the gate), `done (2026-09-29)`. See
