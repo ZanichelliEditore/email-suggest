@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T19:35:16+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `ec7e6e3`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36606058001
+  (jobs `quality` and `checks` both success; observed with `gh run watch`).
 
 - **Current task:** T-013 (`docs/tasks/T-013-consumer-check.md`),
   `done (2026-09-29)`. **Phase 2 closed**, and with it every phase in
