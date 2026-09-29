@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T16:55:38+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `2ba7b66`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36586338212
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-009 (`docs/tasks/T-009-pack-smoke.md`),
   `done (2026-09-29)`.
