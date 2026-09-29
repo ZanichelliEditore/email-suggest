@@ -4,11 +4,8 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T15:43:44+02:00`
-- **Describes commit:** `696118f`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36577302804
-  (jobs `quality` and `checks` both success; observed with `gh run view`).
+- **Written:** `2026-09-29T15:47:45+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<pending>`. T-007's code is `696118f`; this commit adds only the T-008 row.
 
 - **Current task:** T-007 (`suggest()` and Phase 1 close),
   `done (2026-09-29)`. See `docs/tasks/T-007-suggest.md` § Done. **Phase 1
@@ -17,7 +14,7 @@
   ran on this commit.
 
 - **Next action:** `/resume`, then `/plan Phase 2`. PLAN.md has no Phase 2
-  rows yet.
+  rows yet. `/plan` must place, size and confirm the `proposed` row T-008.
 
 - **Read before anything else:**
   - `src/index.ts` exports only `suggest` and `Suggestion`
@@ -48,12 +45,17 @@
     comment only) and a step-1.2-bound coverage gap (parked,
     `test/suggest.test.ts:69-72`).
 
-- **Proposed plan changes:** none.
+- **Proposed plan changes:** T-008, "`suggest` returns null for
+  non-string input; SPEC §3 amendment" (PLAN.md § Raised after Phase 1
+  close). Owner decision, 2026-09-29.
 
 - **Open doubts:**
-  - T-007: `suggest(null)` throws, dismissed pending the owner's view. The
-    no-Node demo shims `/usr/bin` rather than removing it (journal,
-    2026-09-29).
+  - T-007: `suggest(null)` throws. The owner decided on 2026-09-29 that it
+    should return null, so this is now T-008. Still open: does the §3
+    amendment need an RFC, or is the owner's SPEC amendment enough (as
+    with step 1.2)?
+  - T-007: the no-Node demo shims `/usr/bin` rather than removing it
+    (journal, 2026-09-29).
   - Carried: Dependabot `docker`/`npm` grouping reasoned, not observed;
     repo is public although the owner said "internal use"; arm64
     unverified; first secret-scanning history scan (enabled 2026-09-29)

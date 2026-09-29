@@ -46,3 +46,12 @@ Node 24 over 22: SPEC §7 and T-002's acceptance now say `v24.`.
 | T-005 | Known-domain list, with its guards | build | T-004 | `make quality` green with `test/domains.test.ts` passing: no duplicates, all lowercase | done (2026-09-29) |
 | T-006 | TLD typo map, with its guard | build | T-004 | `make quality` green with `test/tld-typos.test.ts` passing: no key in the real-TLD set | done (2026-09-29) |
 | T-007 | `suggest()` and Phase 1 close | build | T-004, T-005, T-006 | `make quality` green with Node's dirs removed from `PATH` (`command -v node` empty); vitest passes every §10 row and the "no list entry is suggested" guard; `make build` emits `dist/index.js` + `.d.ts` | done (2026-09-29) |
+
+## Raised after Phase 1 close
+
+*Raised at T-007's handoff, 2026-09-29: the owner decided `suggest(null)`
+returns null. `/plan` places and sizes the row.*
+
+| Id | Title | Type | Depends | Acceptance | Status |
+|---|---|---|---|---|---|
+| T-008 | `suggest` returns null for non-string input; SPEC §3 amendment | build | T-007 | SPEC §3 says `suggest` never throws and returns `null` for any non-string argument; `test/suggest.test.ts` covers `null`, `undefined`, a number and an object; `make quality` green | proposed |
