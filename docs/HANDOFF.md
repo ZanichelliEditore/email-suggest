@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T19:12:58+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`
+- **Describes commit:** `55598fe`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36603435083
+  (jobs `quality` and `checks` both success; observed with `gh run watch`).
 
 - **Current task:** T-014 (`docs/tasks/T-014-gemfury-upload-fix.md`),
   `done (2026-09-29)`.
