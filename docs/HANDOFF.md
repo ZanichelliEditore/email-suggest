@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T15:16:52+02:00`
-- **Describes commit:** `<hash>` (filled by the stamp commit). **CI:**
-  `<pending>`.
+- **Describes commit:** `0774cd4`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36574003789
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-006 (TLD typo map, with its guard),
   `done (2026-09-29)`. See `docs/tasks/T-006-tld-typos.md` § Done.
