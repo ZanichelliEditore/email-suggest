@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** doing (2026-09-29)
+- **Status:** done (2026-09-29)
 - **Depends on:** T-010
 - **Created:** 2026-09-29
 
@@ -59,18 +59,37 @@ that wait, and the publish workflow moves to the next session.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `584a650`: `.github/workflows/publish.yml` (tag check → `make quality`
+  → curl upload of `.pack/*.tgz`, non-2xx fails);
+  `tools/checks/check_tag_version.py` with
+  `tools/checks/test_check_tag_version.py` (12 tests, e.g.
+  `Mismatch::test_suffix_after_version_fails`); `make pack-smoke` keeps its
+  tarball in `.pack/`; README consumer install; SPEC §9 amended (curl
+  upload, account as secret).
+- CI for `584a650` green:
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36590272213
+- Upload step checked by hand against a local stub server (not
+  in the gate: it needs a live HTTP endpoint): token arrives as the
+  basic-auth user; 200 → exit 0, 302 → exit 1, 404 → curl exit 22; missing
+  secret or tarball → exit 1.
+- Owner set secrets `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`
+  (`gh secret list`, 2026-09-29T16:48Z).
 
 ## Dead ends
-none
+- `npm publish` with an npmrc under `/tmp` in the container (the task's
+  plan): Gemfury documents push tokens only for `push.fury.io`, and the
+  dev image has no curl, so the upload runs on the runner (owner
+  decision, SPEC §9).
 
 ## Open doubts
-none
+- The upload has never hit the real Gemfury: first proof is T-012's tag.
+- Whether the token pasted in chat on 2026-09-29 was rotated before
+  `GEMFURY_PUSH_TOKEN` was set: not confirmed.
+- The owner's Gemfury account looks personal, while SPEC §9 says
+  "Zanichelli's Gemfury": not settled.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

@@ -124,3 +124,14 @@ stands for. End an entry with the task id it came from.
   ruff-only job: CI stays green but stops running Biome, tsc, vitest and
   pack-smoke. Re-apply the `make quality` step and `fetch-depth: 0` if an
   update drops them. (T-010 review)
+- Gemfury documents push tokens for `https://<token>@push.fury.io/<account>/`
+  (`curl -F package=@<tgz>`), not for `npm publish`. The token goes to
+  curl as `user = "<token>:"` on `--config -` stdin, so it never enters
+  argv. A 3xx exits 0 even with `--fail-with-body`: check
+  `%{http_code}`. (T-011)
+- GitHub prints each step's `env:` in the run log and masks only
+  secrets, not `vars.*`: on a public repo, a value that must stay out of
+  sight goes in a secret even if it isn't a credential. (T-011 review)
+- In a local test, `curl --output /dev/stderr` into a redirected file
+  reopens the file and overwrites earlier output; capture the body on
+  stdout instead. (T-011)
