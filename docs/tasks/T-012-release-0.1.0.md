@@ -41,7 +41,8 @@ CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag
   `package.json` `version` `0.1.0`; `gh secret list` shows
   `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`.
 - Annotated tag `v0.1.0` (object `abdb05d`) on `7f3dc30`, pushed on the
-  owner's explicit go (2026-09-29). Publish run queued, not observed:
+  owner's explicit go (2026-09-29). Publish run failed at step
+  `upload to Gemfury` (seen at handoff, log not read):
   https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601141874
 - No code change; `make quality` green before and after.
 
@@ -49,7 +50,8 @@ CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag
 none
 
 ## Open doubts
-- The publish run's outcome is unknown: first real upload to Gemfury.
+- Why the upload failed, and whether `0.1.0` reached Gemfury: proposed
+  T-014.
 - Whether Gemfury allows deleting a published version: still unverified.
 
 ## Context pressure
