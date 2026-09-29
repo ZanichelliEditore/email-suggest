@@ -278,7 +278,8 @@ published `exports` map and types work, not just the source.
   capability to route through a core.
 - The library handles email addresses only in memory and never stores or
   sends them.
-- Personal data: the Gemfury account name and tokens stay out of git (§9).
+- Personal data: the Gemfury tokens stay out of git; the account name is
+  not secret (§9).
 
 ## 12. Change process
 

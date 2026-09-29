@@ -47,6 +47,26 @@ pack-smoke: build ## pack the tarball into .pack/, install it in a scratch dir, 
 
 quality: lint format-check typecheck test pack-smoke ## full local gate
 
+# SPEC §13, Phase 2: the published 0.1.0, from Gemfury, into a scratch Vite
+# project. Not in `quality`: it needs the network and a read token. Both values
+# come from the gitignored .env and reach the container by name (`-e VAR`, no
+# value on any command line); the fixture's .npmrc reads them from the
+# environment. --userconfig brings the repo's .npmrc along, as in pack-smoke.
+# Vite is the one vitest pins in the lockfile (T-013: no new dependency). The
+# lockfile grep proves npm fetched the package from Gemfury.
+.PHONY: consumer-check
+consumer-check: deps ## install 0.1.0 from Gemfury into a scratch Vite project, vite build it and check suggest() (needs GEMFURY_ACCOUNT and GEMFURY_TOKEN in .env)
+	@test -f .env || { echo "consumer-check: no .env; put GEMFURY_ACCOUNT and GEMFURY_TOKEN (a read-only deploy token) in it" >&2; exit 1; }
+	set -a; . ./.env; set +a; \
+	: "$${GEMFURY_ACCOUNT:?missing from .env}" "$${GEMFURY_TOKEN:?missing from .env}"; \
+	docker compose run --rm -T -e GEMFURY_ACCOUNT -e GEMFURY_TOKEN dev sh -c 'set -e; \
+	  d=$$(mktemp -d); cp -r consumer-check/. "$$d"; cd "$$d"; \
+	  npm install --userconfig /app/.npmrc --no-audit --no-fund @zanichelli/email-suggest@0.1.0; \
+	  grep -q "\"resolved\": \"https://npm.fury.io/" package-lock.json \
+	    || { echo "consumer-check: the package did not come from npm.fury.io" >&2; exit 1; }; \
+	  /app/node_modules/.bin/vite build; \
+	  node check.js'
+
 rfc-sync: ## move RFCs into the folder matching their Status
 	python3 tools/checks/sync_rfc_status.py
 

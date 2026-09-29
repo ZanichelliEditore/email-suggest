@@ -21,6 +21,7 @@ A zero-dependency library ([SPEC](../../SPEC.md) §3–§5). Phase 1 (T-004 to T
 - **`src/domains.ts`** — the known-domain list, in priority order (SPEC §5).
 - **`src/tld-typos.ts`** — the TLD typo map, typo to fix (SPEC §5).
 - **`pack-smoke/`** — a consumer fixture, not shipped. `make pack-smoke`, part of `make quality`, packs the tarball into `.pack/` (`"files": ["dist"]` keeps it to `dist/` plus npm's defaults), installs it in a scratch dir inside the container, runs `consumer.ts` with Node and typechecks it with the repo's `tsc` against the shipped `.d.ts` (SPEC §10). Phase 2 (T-009).
+- **`consumer-check/`** — a consumer fixture, not shipped. `make consumer-check`, outside `make quality` (it needs the network and a read token), copies it to the container's `/tmp`, installs the published `0.1.0` from Gemfury with the fixture's `.npmrc` (the README's form: `${GEMFURY_ACCOUNT}` and `${GEMFURY_TOKEN}` from the gitignored `.env`), checks the package came from `npm.fury.io`, runs `vite build` with the Vite vitest pins in the lockfile, then `check.js` with Node (SPEC §13). Phase 2 (T-013).
 
 ## Dependency rules
 

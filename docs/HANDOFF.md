@@ -4,75 +4,70 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T19:12:58+02:00`
-- **Describes commit:** `55598fe`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36603435083
-  (jobs `quality` and `checks` both success; observed with `gh run watch`).
+- **Written:** `2026-09-29T19:35:16+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
+  `<pending>`.
 
-- **Current task:** T-014 (`docs/tasks/T-014-gemfury-upload-fix.md`),
-  `done (2026-09-29)`.
-  - Publish run for `v0.1.0` green on re-run (attempt 2); Gemfury printed
-    `... 0.1.0.tgz ... ok`; owner saw `0.1.0` on the org package list:
-    https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601141874
-  - Cause: wrong account slug (personal, not organization). No workflow
-    change was needed for the upload itself.
-  - Owner addition: `GEMFURY_ACCOUNT` is now a repo **variable**
-    (`vars.`), not a secret; SPEC §9 amended.
+- **Current task:** T-013 (`docs/tasks/T-013-consumer-check.md`),
+  `done (2026-09-29)`. **Phase 2 closed**, and with it every phase in
+  SPEC §13.
+  - `make consumer-check` exit 0: `0.1.0` from Gemfury, `vite build`,
+    `deepStrictEqual` passed; failure path shown (task file "Done").
+  - CI green for tagged commit `7f3dc30`: runs 36600709140 (`quality`),
+    36601141874 (`publish`).
 
-- **Next action:** `/resume`; take T-013 (`todo`, depends on T-012 done).
-  Before starting, ask the owner for the Gemfury read (deploy) token and
-  the account slug in the gitignored `.env`.
+- **Next action:** `/resume`. PLAN has no `todo` row left: ask the owner
+  whether to `/plan` a new phase (SPEC §13 would need one first) or to
+  triage `docs/improvements.md`.
 
 - **Read before anything else:**
-  - The upload is `curl` to `push.fury.io`; the account is
-    `vars.GEMFURY_ACCOUNT`, the token `secrets.GEMFURY_PUSH_TOKEN`
-    (SPEC §9, owner decision 2026-09-29, T-014).
-  - T-013's first acceptance line (publish run for `v0.1.0` green) now
-    holds.
-  - A re-run uses the tagged commit's workflow file, not `main`'s
-    (`docs/journal.md`, 2026-09-29, T-014).
-  - `quality.yml` is managed: an update may restore the ruff-only job
-    (`docs/journal.md`, 2026-09-29, T-010).
+  - `make consumer-check` needs a Gemfury **deploy** token and the account
+    slug in the gitignored `.env` (`GEMFURY_TOKEN`, `GEMFURY_ACCOUNT`); a
+    push token gets 401 (`docs/journal.md`, 2026-09-29, T-013).
+  - `consumer-check/.npmrc` is tracked on purpose: only `${…}`
+    placeholders (task file note, owner-reviewed 2026-09-29).
+  - `/security-review` can't see pushed work (`origin/HEAD` unset); redo it
+    in the main session (`docs/journal.md`, T-013).
 
-- **Reviews:** `/review` (code-reviewer) on the T-014 diff: 5 findings.
-  SPEC §9 "never written in tracked files" false: reworded on the owner's
-  go. `vars.` path untested: recorded as an open doubt. HANDOFF stale
-  secret line: fixed by this rewrite. T-011 acceptance names
-  `secrets.GEMFURY_ACCOUNT`: dismissed, historical record; PLAN note
-  records the reversal. Task-file list and PLAN wrap: fixed.
+- **Reviews:** `/review` (code-reviewer) on `git diff e33392a` + T-013:
+  0 blockers; 5 findings fixed (SPEC §11 wording on the owner's go, task
+  note, Biome hook pattern, gitleaks with fixture staged, overview entry).
+  Security review in the main session: no exploitable findings; publish
+  build/upload job split parked in `docs/improvements.md`.
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - New: `vars.GEMFURY_ACCOUNT` has never run; first test is the next
-    tag. With the secret deleted, run 36601141874 can't be re-run.
+  - New: the first `.env` token may have been the repo push token (now on
+    the laptop); the push token created 2026-09-29 19:23 is unused.
+    Rotation/revocation of either: not confirmed.
+  - New: `make consumer-check` relies on vitest's Vite hoisted to
+    `node_modules/.bin/vite`.
   - Carried:
-    - Gemfury's error body is not printed on a failed upload (parked,
-      `docs/improvements.md`, `publish.yml` bash `-e`).
+    - `vars.GEMFURY_ACCOUNT` has never run; first test is the next tag.
+    - Gemfury's error body is not printed on a failed upload (parked).
     - Whether Gemfury allows deleting a published version is unverified.
     - Rotation of the token pasted in chat on 2026-09-29: not confirmed.
     - The unpinned ruff in CI versus pre-commit's pin v0.15.17 (parked).
     - A boxed `new String(...)` returns `null`; no test covers it.
-    - The no-Node demo shims `/usr/bin`, and `/usr/local/bin/node` also
-      exists on this host. `make quality-no-node` stays parked.
+    - `make quality-no-node` stays parked; `/usr/local/bin/node` on host.
     - Dependabot `docker`/`npm` grouping is reasoned, not observed.
     - The repo is public, although the owner said "internal use".
     - arm64 is unverified.
-    - The first secret-scanning history scan (enabled 2026-09-29) hasn't
-      been re-checked.
+    - The first secret-scanning history scan hasn't been re-checked.
 
-- **Dead ends:** Gemfury `USER:TOKEN` auth hypothesis: wrong, the
-  token-as-user form works (T-014 task file).
+- **Dead ends:** two push tokens as the read token: 401 on `npm.fury.io`
+  despite 200 on `api.fury.io` (task file).
 
 - **Known red:** none.
 
 - **Checkpoint:** `make quality` exit 0:
-  - Biome check "Checked 15 files … No fixes applied." and ruff "All
+  - Biome check "Checked 19 files … No fixes applied." and ruff "All
     checks passed!";
-  - Biome format "Checked 15 files … No fixes applied.";
+  - Biome format "Checked 19 files … No fixes applied.";
   - `tools/checks` "Ran 17 tests … OK";
   - vitest: 4 files passed, 59 tests passed;
   - pack-smoke: npm pack reports 11 files, then "pack-smoke: import, call
     and consumer typecheck passed";
   - gitleaks (tree) and gitleaks (history) Passed.
+  - Outside the gate: `make consumer-check` exit 0 (needs `.env`).

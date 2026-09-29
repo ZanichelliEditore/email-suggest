@@ -145,3 +145,15 @@ stands for. End an entry with the task id it came from.
   used: with the account slug as a secret, the scope in
   `<scope>-email-suggest-0.1.0.tgz` printed as `***`. A value that is also
   the package scope can't usefully be secret. (T-014)
+- A Gemfury push token authenticates on `api.fury.io` (`/1/users/me` and
+  `/1/packages` return 200) yet gets 401 from `npm.fury.io` in every auth
+  form (`_authToken`, Basic `token:`, Bearer, token in the URL). An API 200
+  does not prove install access: installing needs a deploy token. (T-013)
+- `/security-review` diffs against `origin/HEAD...`. In this clone
+  `origin/HEAD` is unset, and once work is pushed to `main` the range is
+  empty anyway, so a phase-close security review is done in the main
+  session over `git diff <phase-start>`. (T-013)
+- Biome's `check --error-on-warnings` passed an `index.html` whose
+  `<meta charset="utf-8" />` `biome format` then rejected: the HTML
+  formatter wants void elements without ` /`. `make quality` runs both, so
+  the gate caught it; the pre-commit hook runs only `check`. (T-013)
