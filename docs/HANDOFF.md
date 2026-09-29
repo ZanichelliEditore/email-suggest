@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T14:19:40+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`
+- **Describes commit:** `49f23f8`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36567410361
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-005 (known-domain list, with its guards),
   `done (2026-09-29)`. See `docs/tasks/T-005-domains.md` § Done.
@@ -32,8 +34,9 @@
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - Carried: whether repo security updates are enabled is unverified (no
-    `gh`); Dependabot `docker`/`npm` grouping reasoned, not observed; repo
+  - Carried: whether repo security updates are enabled is unverified;
+    `gh` 2.45.0 is now installed and authenticated (2026-09-29), so it can
+    be checked. Dependabot `docker`/`npm` grouping reasoned, not observed; repo
     is public although the owner said "internal use"; arm64 unverified.
 
 - **Dead ends:** none.
