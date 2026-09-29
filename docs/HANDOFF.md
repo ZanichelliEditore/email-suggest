@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T17:04:57+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`.
+- **Describes commit:** `527b150`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36587515575
+  (jobs `quality` and `checks` both success; observed with `gh run watch`).
 
 - **Current task:** T-010 (`docs/tasks/T-010-ci-make-quality.md`),
   `done (2026-09-29)`.
