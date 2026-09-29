@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-011, owner: `GEMFURY_ACCOUNT` and
   `GEMFURY_PUSH_TOKEN` secrets set
 - **Created:** 2026-09-29
@@ -11,9 +11,9 @@
 Tag `v0.1.0` is pushed and the publish run starts.
 
 ## In scope
-- Confirm T-011's CI run green, the variable and secret exist
-  (`gh variable list`, `gh secret list`), and `package.json` `version` is
-  `0.1.0`.
+- Confirm T-011's CI run green, both secrets exist (`gh secret list`;
+  `GEMFURY_ACCOUNT` became a secret at T-011, 2026-09-29), and
+  `package.json` `version` is `0.1.0`.
 - Push tag `v0.1.0` only after the owner's explicit go in this session:
   a published version cannot be taken back. The owner may push it instead.
 
@@ -36,18 +36,24 @@ CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- Checked on entry (2026-09-29): CI `quality` green on `7f3dc30`,
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36600709140;
+  `package.json` `version` `0.1.0`; `gh secret list` shows
+  `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`.
+- Annotated tag `v0.1.0` (object `abdb05d`) on `7f3dc30`, pushed on the
+  owner's explicit go (2026-09-29). Publish run queued, not observed:
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601141874
+- No code change; `make quality` green before and after.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- The publish run's outcome is unknown: first real upload to Gemfury.
+- Whether Gemfury allows deleting a published version: still unverified.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

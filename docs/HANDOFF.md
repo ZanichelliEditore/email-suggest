@@ -4,61 +4,43 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T18:49:18+02:00`
-- **Describes commit:** `b1ac7d0`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36600554670
-  (jobs `quality` and `checks` both success; observed with `gh run watch`).
+- **Written:** `2026-09-29T18:55:36+02:00`
+- **Describes commit:** `<hash>`. **CI:** `<pending>`
 
-- **Current task:** T-011 (`docs/tasks/T-011-publish-workflow.md`),
+- **Current task:** T-012 (`docs/tasks/T-012-release-0.1.0.md`),
   `done (2026-09-29)`.
-  - `584a650`: `publish.yml`, `tools/checks/check_tag_version.py` + its
-    test, `.pack/` from `make pack-smoke`, README consumer install,
-    SPEC §9 amended. CI green:
-    https://github.com/ZanichelliEditore/email-suggest/actions/runs/36590272213
-  - Secrets `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN` set by the owner
-    (`gh secret list`, 2026-09-29T16:48Z).
+  - Annotated tag `v0.1.0` on `7f3dc30` pushed on the owner's go
+    (2026-09-29). CI on `7f3dc30` green:
+    https://github.com/ZanichelliEditore/email-suggest/actions/runs/36600709140
+  - Publish run queued, not observed:
+    https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601141874
 
-- **Next action:** `/resume`, then take T-012
-  (`docs/tasks/T-012-release-0.1.0.md`). The tag push waits for the
-  owner's explicit go.
+- **Next action:** `/resume`, then take T-013
+  (`docs/tasks/T-013-consumer-check.md`); its first step is checking publish run
+  `36601141874` (`gh run view 36601141874`).
 
 - **Read before anything else:**
-  - Owner decisions 2026-09-29 (SPEC §9, PLAN § Phase 2 re-plan note):
-    - the upload is `curl` to `push.fury.io` from the runner, not
-      `npm publish`;
-    - `GEMFURY_ACCOUNT` is a repo **secret**, not a variable.
-  - T-013 still needs a Gemfury read (deploy) token and the account slug
-    in the gitignored `.env`.
+  - The upload is `curl` to `push.fury.io` and `GEMFURY_ACCOUNT` is a
+    secret (owner decisions 2026-09-29, SPEC §9).
+  - T-013 needs a Gemfury read (deploy) token and the account slug in the
+    gitignored `.env`: ask the owner before starting.
+  - If the publish run is red, the version may or may not be on Gemfury:
+    check the upload step's log before any retag.
   - `quality.yml` is managed: an update may restore the ruff-only job
     (`docs/journal.md`, 2026-09-29, T-010).
 
-- **Reviews:**
-  - `code-reviewer` full round: 0 blockers, 2 should-fix, 4 nits.
-    - Should-fix 1: task file contradicted the build. Fixed (Superseded
-      note).
-    - Should-fix 2: account name visible in the public log as a variable.
-      Fixed by owner choice: now a secret.
-    - Nit, redirect passes silently: fixed with the 2xx check.
-    - Nit, `GEMFURY_PUSH_URL` redundant: dismissed; the `fury.io` line has
-      to name `secrets.GEMFURY_ACCOUNT` for the acceptance grep.
-    - Nit, no gate test for the upload: stub-server check recorded in the
-      task file's Done section.
-    - Nit, SHA-pin actions: parked (`docs/improvements.md`).
-  - Scoped round: nothing falsifies acceptance or fails open. 4xx body
-    not printed: parked. Task-file wording: fixed.
-  - `/security-review` skill failed (no `origin/HEAD`), so it was done in
-    the main session: no high-confidence issue. Tag ruleset parked.
+- **Reviews:** `/review` dismissed: no diff since the task started (only
+  a tag, and this handoff's doc edits).
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - New:
-    - The upload has never hit the real Gemfury: T-012's tag is the first
-      proof.
+  - New: none.
+  - Carried:
+    - The publish run is the first real upload to Gemfury.
+    - Whether Gemfury allows deleting a published version is unverified.
     - Rotation of the token pasted in chat on 2026-09-29: not confirmed.
     - The Gemfury account looks personal; SPEC §9 says "Zanichelli's".
-  - Carried:
     - The unpinned ruff in CI versus pre-commit's pin v0.15.17 (parked).
     - A boxed `new String(...)` returns `null`; no test covers it.
     - The no-Node demo shims `/usr/bin`, and `/usr/local/bin/node` also
@@ -68,11 +50,8 @@
     - arm64 is unverified.
     - The first secret-scanning history scan (enabled 2026-09-29) hasn't
       been re-checked.
-    - Whether Gemfury allows deleting a published version is unverified
-      (matters for T-012).
 
-- **Dead ends:** `npm publish` from the container (task's plan): no
-  documented push-token support, and no curl in the image.
+- **Dead ends:** none.
 
 - **Known red:** none.
 
