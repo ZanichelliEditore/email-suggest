@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T16:00:22+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `cd0e16a`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36579430330
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** `/plan Phase 2` (a plan session with no PLAN row),
   `done (2026-09-29)`. Phase 2 is planned: T-008 to T-013 are `todo` in
