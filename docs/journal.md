@@ -135,3 +135,13 @@ stands for. End an entry with the task id it came from.
 - In a local test, `curl --output /dev/stderr` into a redirected file
   reopens the file and overwrites earlier output; capture the body on
   stdout instead. (T-011)
+- A 403 from `push.fury.io` (`curl: (22) … error: 403`) came from a wrong
+  account slug: the personal account where the organization's belonged.
+  The token-as-user form (`user = "<token>:"`) was right; after the owner
+  fixed the slug, a re-run of run 36601141874 uploaded `0.1.0` ("... ok").
+  A re-run reads the current secrets and variables, but the workflow file
+  of the tagged commit. (T-014)
+- A secret is masked wherever its value appears, not only where it is
+  used: with the account slug as a secret, the scope in
+  `<scope>-email-suggest-0.1.0.tgz` printed as `***`. A value that is also
+  the package scope can't usefully be secret. (T-014)

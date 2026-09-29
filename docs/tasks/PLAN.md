@@ -65,6 +65,9 @@ now asks findings resolved. At T-011 (2026-09-29) the owner chose, and
 amended SPEC §9 for: a `curl` upload to Gemfury's push endpoint instead of
 `npm publish`, and `GEMFURY_ACCOUNT` as a repo secret, not a variable (the
 public Actions log would show a variable); T-011's acceptance line follows.
+At the `/resume` after T-012's handoff (2026-09-29) the owner confirmed
+T-014 as the session's task, and during it reversed T-011's choice:
+`GEMFURY_ACCOUNT` is a repo variable, not a secret (SPEC §9).
 
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
@@ -74,4 +77,4 @@ public Actions log would show a variable); T-011's acceptance line follows.
 | T-011 | Publish workflow; README consumer docs | build | T-010 | T-010's CI run is green on entry; `publish.yml` triggers only on `v*.*.*` and runs tag/version check, `make quality`, build, publish; every `fury.io` hit in tracked files uses `<account>` or `secrets.GEMFURY_ACCOUNT`; `make quality` green; pushed (ends at the owner setting `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`) | done (2026-09-29) |
 | T-012 | Release `v0.1.0` | build | T-011 | CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag `v0.1.0` pushed after the owner's explicit go (ends at the wait for the publish run) | done (2026-09-29) |
 | T-013 | Consumer check and Phase 2 close | build | T-012 | publish run for `v0.1.0` green; `make consumer-check` exits 0 (0.1.0 from Gemfury into a scratch Vite project in the container's `/tmp`, `vite build` succeeds, `deepStrictEqual` on `suggest("mario@lgmai.com")`); CI green for the tagged commit; `/review` and `/security-review` run, findings resolved or dismissed with a reason | todo |
-| T-014 | Diagnose and fix the failed Gemfury upload of `v0.1.0` | build | T-012 | publish run for `v0.1.0` (re-run or new tag) green, and `0.1.0` listed on Gemfury; `make quality` green | proposed |
+| T-014 | Diagnose and fix the failed Gemfury upload of `v0.1.0` | build | T-012 | publish run for `v0.1.0` (re-run or new tag) green, and `0.1.0` listed on Gemfury; `make quality` green | done (2026-09-29) |

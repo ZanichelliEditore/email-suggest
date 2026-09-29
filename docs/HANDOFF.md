@@ -4,51 +4,52 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T18:55:36+02:00`
-- **Describes commit:** `3bb8175`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601311183
-  (jobs `quality` and `checks` both success; observed with `gh run watch`).
+- **Written:** `2026-09-29T19:12:58+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
+  `<pending>`
 
-- **Current task:** T-012 (`docs/tasks/T-012-release-0.1.0.md`),
+- **Current task:** T-014 (`docs/tasks/T-014-gemfury-upload-fix.md`),
   `done (2026-09-29)`.
-  - Annotated tag `v0.1.0` on `7f3dc30` pushed on the owner's go
-    (2026-09-29). CI on `7f3dc30` green:
-    https://github.com/ZanichelliEditore/email-suggest/actions/runs/36600709140
-  - Publish run **failed** at step `upload to Gemfury` (seen
-    2026-09-29 with `gh run view --json jobs`; log not read):
+  - Publish run for `v0.1.0` green on re-run (attempt 2); Gemfury printed
+    `... 0.1.0.tgz ... ok`; owner saw `0.1.0` on the org package list:
     https://github.com/ZanichelliEditore/email-suggest/actions/runs/36601141874
+  - Cause: wrong account slug (personal, not organization). No workflow
+    change was needed for the upload itself.
+  - Owner addition: `GEMFURY_ACCOUNT` is now a repo **variable**
+    (`vars.`), not a secret; SPEC §9 amended.
 
-- **Next action:** `/resume`; owner decides on proposed row T-014 (fix
-  the upload) before T-013. Its first step: `gh run view 36601141874
-  --log-failed`, and check whether `0.1.0` reached Gemfury anyway.
+- **Next action:** `/resume`; take T-013 (`todo`, depends on T-012 done).
+  Before starting, ask the owner for the Gemfury read (deploy) token and
+  the account slug in the gitignored `.env`.
 
 - **Read before anything else:**
-  - The upload is `curl` to `push.fury.io` and `GEMFURY_ACCOUNT` is a
-    secret (owner decisions 2026-09-29, SPEC §9).
-  - T-013 needs a Gemfury read (deploy) token and the account slug in the
-    gitignored `.env`: ask the owner before starting.
-  - The publish run is red: `0.1.0` may or may not be on Gemfury. Read
-    the upload step's log before any re-run or retag; a re-run of the same
-    run re-uploads the same tarball.
+  - The upload is `curl` to `push.fury.io`; the account is
+    `vars.GEMFURY_ACCOUNT`, the token `secrets.GEMFURY_PUSH_TOKEN`
+    (SPEC §9, owner decision 2026-09-29, T-014).
+  - T-013's first acceptance line (publish run for `v0.1.0` green) now
+    holds.
+  - A re-run uses the tagged commit's workflow file, not `main`'s
+    (`docs/journal.md`, 2026-09-29, T-014).
   - `quality.yml` is managed: an update may restore the ruff-only job
     (`docs/journal.md`, 2026-09-29, T-010).
 
-- **Reviews:** `/review` dismissed: no diff since the task started (only
-  a tag, and this handoff's doc edits).
+- **Reviews:** `/review` (code-reviewer) on the T-014 diff: 5 findings.
+  SPEC §9 "never written in tracked files" false: reworded on the owner's
+  go. `vars.` path untested: recorded as an open doubt. HANDOFF stale
+  secret line: fixed by this rewrite. T-011 acceptance names
+  `secrets.GEMFURY_ACCOUNT`: dismissed, historical record; PLAN note
+  records the reversal. Task-file list and PLAN wrap: fixed.
 
-- **Proposed plan changes:**
-  - T-014 (`proposed`, PLAN.md): diagnose and fix the failed Gemfury
-    upload of `v0.1.0`. T-013's first acceptance line ("publish run for
-    `v0.1.0` green") cannot hold until then; T-014 should run first.
+- **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - New: why the upload failed (token, account slug, endpoint, or the
-    2xx check): not investigated.
+  - New: `vars.GEMFURY_ACCOUNT` has never run; first test is the next
+    tag. With the secret deleted, run 36601141874 can't be re-run.
   - Carried:
+    - Gemfury's error body is not printed on a failed upload (parked,
+      `docs/improvements.md`, `publish.yml` bash `-e`).
     - Whether Gemfury allows deleting a published version is unverified.
     - Rotation of the token pasted in chat on 2026-09-29: not confirmed.
-    - The Gemfury account looks personal; SPEC §9 says "Zanichelli's".
     - The unpinned ruff in CI versus pre-commit's pin v0.15.17 (parked).
     - A boxed `new String(...)` returns `null`; no test covers it.
     - The no-Node demo shims `/usr/bin`, and `/usr/local/bin/node` also
@@ -59,11 +60,10 @@
     - The first secret-scanning history scan (enabled 2026-09-29) hasn't
       been re-checked.
 
-- **Dead ends:** none.
+- **Dead ends:** Gemfury `USER:TOKEN` auth hypothesis: wrong, the
+  token-as-user form works (T-014 task file).
 
-- **Known red:** `make quality` and `quality.yml` green. `publish.yml`
-  run `36601141874` for tag `v0.1.0`: red, step `upload to Gemfury`;
-  cause unknown (proposed T-014).
+- **Known red:** none.
 
 - **Checkpoint:** `make quality` exit 0:
   - Biome check "Checked 15 files … No fixes applied." and ruff "All

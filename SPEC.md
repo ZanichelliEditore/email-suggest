@@ -213,9 +213,11 @@ Docker is the only local path; Node is not needed on the host.
      for push tokens and does not document `npm publish` with one (owner
      decision, 2026-09-29, T-011).
 - The push token is the repo secret `GEMFURY_PUSH_TOKEN`. The account name
-  is the repo secret `GEMFURY_ACCOUNT`, never written in tracked files
-  (AGENTS.md rule 2); a secret, not a variable, so the public Actions log
-  masks it (owner decision, 2026-09-29, T-011).
+  is the repo variable `GEMFURY_ACCOUNT`. It is not a secret: it is the
+  organization's account, the same string as the public package scope,
+  and as a secret it turned every log mention of the scope into `***`
+  (owner decision, 2026-09-29, T-014, reversing T-011's). Only the token
+  is confidential.
 - The README documents the consumer's `.npmrc` scope line using the
   `<account>` placeholder, and where to get a read token.
 

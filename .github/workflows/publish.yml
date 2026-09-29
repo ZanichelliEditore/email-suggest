@@ -31,15 +31,16 @@ jobs:
       - run: make quality
       # 4. Upload that tarball to Gemfury's push endpoint. The dev image has no
       # curl, so this runs on the runner. The token goes to curl on stdin as
-      # the URL's user, never in argv or a file. The account is a secret too,
-      # so the public run log masks it (SPEC §9).
+      # the URL's user, never in argv or a file. The account is a repo
+      # variable, not a secret: a masked account also masks the package scope
+      # in every log line (SPEC §9).
       - name: upload to Gemfury
         env:
-          GEMFURY_PUSH_URL: https://push.fury.io/${{ secrets.GEMFURY_ACCOUNT }}/
-          GEMFURY_ACCOUNT: ${{ secrets.GEMFURY_ACCOUNT }}
+          GEMFURY_PUSH_URL: https://push.fury.io/${{ vars.GEMFURY_ACCOUNT }}/
+          GEMFURY_ACCOUNT: ${{ vars.GEMFURY_ACCOUNT }}
           GEMFURY_PUSH_TOKEN: ${{ secrets.GEMFURY_PUSH_TOKEN }}
         run: |
-          : "${GEMFURY_ACCOUNT:?repo secret GEMFURY_ACCOUNT is not set}"
+          : "${GEMFURY_ACCOUNT:?repo variable GEMFURY_ACCOUNT is not set}"
           : "${GEMFURY_PUSH_TOKEN:?repo secret GEMFURY_PUSH_TOKEN is not set}"
           set -- .pack/*.tgz
           [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball in .pack/, got: $*" >&2; exit 1; }
