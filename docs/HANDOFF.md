@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-09-29T16:09:32+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`
+- **Describes commit:** `12c05d6`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36580595647
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-008 (`docs/tasks/T-008-non-string-input.md`),
   `done (2026-09-29)`.
