@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-009
 - **Created:** 2026-09-29
 
@@ -41,18 +41,30 @@ item, `docs/improvements.md`, T-003 review).
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `405bb34`: `.github/workflows/quality.yml` `quality` job checks out
+  with `fetch-depth: 0`, installs ruff and pre-commit with pipx, and runs
+  `make quality` as its one gate step. The `checks` job is unchanged.
+- Local: `make quality` exit 0. The same gate also passed on a fresh clone
+  with a fresh compose project (new image, empty `node_modules` volume), and
+  actionlint passed.
+- CI: run https://github.com/ZanichelliEditore/email-suggest/actions/runs/36587270115
+  green. Its log shows Biome, ruff, `tools/checks` (5), vitest (59),
+  pack-smoke and both gitleaks scans passing, as the runner's UID rather
+  than 1000.
+- Review follow-ups in `405bb34`: `docs/improvements.md` (old CI item
+  struck; unpinned ruff parked), `docs/journal.md` (managed-file warning).
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- `pipx install ruff` is unpinned while pre-commit pins v0.15.17
+  (`docs/improvements.md`, parked).
+- `quality.yml` is a managed file: `agent-native-setup update` may restore
+  the ruff-only job (`docs/journal.md`, 2026-09-29).
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).
