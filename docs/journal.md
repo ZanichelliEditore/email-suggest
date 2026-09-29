@@ -118,3 +118,9 @@ stands for. End an entry with the task id it came from.
   fails at runtime) and ship only `dist/*.js` (the typecheck fails with
   `TS7016`). A deliberate type error in the consumer alone proves `tsc`
   runs, not that it reads the shipped `.d.ts`. (T-009 review)
+- `quality.yml`'s `quality` job now runs `make quality` with
+  `fetch-depth: 0`. The file is managed (`.agent-native-setup.json`), so an
+  `agent-native-setup update` that restores the template brings back the
+  ruff-only job: CI stays green but stops running Biome, tsc, vitest and
+  pack-smoke. Re-apply the `make quality` step and `fetch-depth: 0` if an
+  update drops them. (T-010 review)

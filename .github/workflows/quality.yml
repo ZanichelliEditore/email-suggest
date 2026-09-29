@@ -17,13 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # so gitleaks-history (make gitleaks) scans every commit
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+      # The host side of the gate; the JS side runs in the dev container
+      # (SPEC §8), whose Dockerfile pins Node.
       - run: pipx install ruff
-      - run: ruff check tools/
-      - run: ruff format --check tools/
-      - run: python3 -m unittest discover -s tools/checks
+      - run: pipx install pre-commit
+      - run: make quality
   checks:
     runs-on: ubuntu-latest
     permissions:
