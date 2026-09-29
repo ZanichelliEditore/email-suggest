@@ -52,7 +52,9 @@ type export.
 
 - The input is trimmed, then split on the **last** `@`. If there is no `@`,
   or the local part or domain is empty, the result is `null`.
-- `suggest` never throws, whatever the input string.
+- `suggest` never throws, whatever the argument. Any non-string argument
+  (e.g. `null`, `undefined`, a number, an object) returns `null`; the signature
+  stays `email: string`.
 - The local part is returned exactly as typed, case included
   (`Mario.Rossi@lgmai.com` → `Mario.Rossi@gmail.com`).
 - The domain is compared and returned lowercase.

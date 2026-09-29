@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-007
 - **Created:** 2026-09-29
 
@@ -40,18 +40,26 @@ argument; vitest passes `test/suggest.test.ts` cases for `null`,
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `SPEC.md` §3: "never throws, whatever the argument"; any non-string
+  argument returns `null`; the signature stays `email: string`.
+- `src/index.ts:16`: `typeof email !== "string"` guard before the trim.
+- `test/suggest.test.ts`: `suggest(%j) = null for a non-string` ×4
+  (`null`, `undefined`, `42`, `{ toString: () => "x@lgmai.com" }`). All 4
+  red with `TypeError` on `.trim` before the guard.
+- Mutation probe, caught: guard replaced by `email == null` +
+  `String(email).trim()`; the `toString` object case goes red.
+- `make quality` exit 0, vitest 59 tests.
+- Commit: see HANDOFF.md "Describes commit".
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- A boxed `new String("x@lgmai.com")` returns `null` (`typeof` is
+  `"object"`). The reviewer judged it within "any non-string"; not tested.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

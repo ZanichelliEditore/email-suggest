@@ -58,6 +58,17 @@ test.each([
   expect(suggest(input)).toBeNull();
 });
 
+// §3: any non-string argument returns null, not a throw. The signature
+// stays `email: string`, so the cast gets past the type as plain JS would.
+// The object stringifies to a typo address, so a `String(email)` coercion
+// would suggest for it instead of returning null.
+test.each([null, undefined, 42, { toString: () => "x@lgmai.com" }])(
+  "suggest(%j) = null for a non-string",
+  (input) => {
+    expect(suggest(input as unknown as string)).toBeNull();
+  },
+);
+
 test("no list entry is ever suggested", () => {
   for (const domain of domains) {
     expect(suggest(`x@${domain}`), domain).toBeNull();

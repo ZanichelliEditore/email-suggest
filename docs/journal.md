@@ -104,3 +104,8 @@ stands for. End an entry with the task id it came from.
   known ones took 13 s and 714 MB. `suggest` skips the computation when
   the length difference alone exceeds the bound, which changes no result
   because OSA distance ≥ the length difference. (T-007 security review)
+- To test a "non-string returns null" guard, the object case should
+  stringify to an input that would otherwise produce a result
+  (`{ toString: () => "x@lgmai.com" }`). A plain object can't tell a
+  `typeof` guard from a `String(x)` coercion: both give `null` for
+  `"[object Object]"`. (T-008 review)

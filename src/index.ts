@@ -9,9 +9,13 @@ export interface Suggestion {
 
 /**
  * A corrected address for a likely typo in `email`'s domain, or null (SPEC
- * §3, matching per §4). Never throws.
+ * §3, matching per §4). Never throws: a non-string argument returns null.
  */
 export function suggest(email: string): Suggestion | null {
+  // The type says string; plain-JS callers may pass anything (§3).
+  if (typeof email !== "string") {
+    return null;
+  }
   const trimmed = email.trim();
   const at = trimmed.lastIndexOf("@");
   if (at <= 0 || at === trimmed.length - 1) {
