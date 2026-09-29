@@ -1,0 +1,54 @@
+name: publish
+# SPEC §9: only CI publishes, and only from a release tag.
+on:
+  push:
+    tags: ["v*.*.*"]
+
+# A second push of the same tag waits instead of racing the first upload.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # so gitleaks-history (make gitleaks) scans every commit
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      # 1. The tag names package.json's version.
+      - run: python3 tools/checks/check_tag_version.py "$GITHUB_REF_NAME"
+      # 2 and 3. The gate, as in quality.yml. Its pack-smoke step builds dist/,
+      # packs it into .pack/ and tests that tarball.
+      - run: pipx install ruff
+      - run: pipx install pre-commit
+      - run: make quality
+      # 4. Upload that tarball to Gemfury's push endpoint. The dev image has no
+      # curl, so this runs on the runner. The token goes to curl on stdin as
+      # the URL's user, never in argv or a file. The account is a secret too,
+      # so the public run log masks it (SPEC §9).
+      - name: upload to Gemfury
+        env:
+          GEMFURY_PUSH_URL: https://push.fury.io/${{ secrets.GEMFURY_ACCOUNT }}/
+          GEMFURY_ACCOUNT: ${{ secrets.GEMFURY_ACCOUNT }}
+          GEMFURY_PUSH_TOKEN: ${{ secrets.GEMFURY_PUSH_TOKEN }}
+        run: |
+          : "${GEMFURY_ACCOUNT:?repo secret GEMFURY_ACCOUNT is not set}"
+          : "${GEMFURY_PUSH_TOKEN:?repo secret GEMFURY_PUSH_TOKEN is not set}"
+          set -- .pack/*.tgz
+          [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball in .pack/, got: $*" >&2; exit 1; }
+          # --fail-with-body catches 4xx/5xx; a 3xx would exit 0 with nothing
+          # uploaded, so the status must be 2xx.
+          response=$(printf 'user = "%s:"\n' "$GEMFURY_PUSH_TOKEN" |
+            curl --config - --silent --show-error --fail-with-body \
+              --write-out '\n%{http_code}' \
+              --form "package=@$1" "$GEMFURY_PUSH_URL")
+          status=${response##*$'\n'}
+          printf '%s\n' "${response%$'\n'*}"
+          case "$status" in 2??) ;; *) echo "upload got HTTP $status" >&2; exit 1 ;; esac

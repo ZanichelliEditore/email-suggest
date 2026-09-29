@@ -3,8 +3,8 @@
 - **Type:** build
 - **Phase:** 2
 - **Status:** todo
-- **Depends on:** T-011, owner: `GEMFURY_ACCOUNT` variable and
-  `GEMFURY_PUSH_TOKEN` secret set
+- **Depends on:** T-011, owner: `GEMFURY_ACCOUNT` and
+  `GEMFURY_PUSH_TOKEN` secrets set
 - **Created:** 2026-09-29
 
 ## Goal

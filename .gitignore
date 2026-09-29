@@ -12,3 +12,5 @@ __pycache__/
 node_modules/
 # tsc output (make build)
 dist/
+# the tarball make pack-smoke tested, uploaded by publish.yml
+.pack/

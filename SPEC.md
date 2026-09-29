@@ -207,10 +207,15 @@ Docker is the only local path; Node is not needed on the host.
      `version`;
   2. `make quality`;
   3. build;
-  4. `npm publish` to Gemfury.
+  4. upload to Gemfury the tarball `make quality`'s pack smoke test
+     checked, with `curl` to the push endpoint
+     `https://push.fury.io/<account>/`. Gemfury documents that endpoint
+     for push tokens and does not document `npm publish` with one (owner
+     decision, 2026-09-29, T-011).
 - The push token is the repo secret `GEMFURY_PUSH_TOKEN`. The account name
-  is the repo variable `GEMFURY_ACCOUNT`, never written in tracked files
-  (AGENTS.md rule 2).
+  is the repo secret `GEMFURY_ACCOUNT`, never written in tracked files
+  (AGENTS.md rule 2); a secret, not a variable, so the public Actions log
+  masks it (owner decision, 2026-09-29, T-011).
 - The README documents the consumer's `.npmrc` scope line using the
   `<account>` placeholder, and where to get a read token.
 

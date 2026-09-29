@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 2
-- **Status:** todo
+- **Status:** doing (2026-09-29)
 - **Depends on:** T-010
 - **Created:** 2026-09-29
 
@@ -20,13 +20,18 @@ the README tells consumers how to install it.
   npmrc under `/tmp`, never the bind-mounted repo. Check Gemfury's push
   URL against its docs. The checkout needs `fetch-depth: 0`: `make quality`
   runs `gitleaks-history`.
+  - *Superseded 2026-09-29 by owner decision (SPEC §9 amended):* the
+    upload is `curl` to `https://push.fury.io/<account>/` from the runner,
+    not `npm publish` in the container (Gemfury documents push tokens only
+    for that endpoint; the dev image has no curl), with no npmrc; the
+    account is `secrets.GEMFURY_ACCOUNT`, not a variable.
 - The tag/version check may be a `tools/checks` script with its unittest.
 - README: consumer `.npmrc` scope line with the `<account>` placeholder,
   and where to get a read token.
 - No `make publish` target: only CI publishes (§9).
 
 ## Out of scope
-- Pushing a tag (T-012). Setting the variable and secret (owner).
+- Pushing a tag (T-012). Setting the two secrets (owner).
 
 ## Spec sections to read
 - SPEC.md §9
@@ -43,7 +48,7 @@ the README tells consumers how to install it.
 ## Acceptance
 T-010's CI run green on entry; `publish.yml` triggers only on `v*.*.*`
 and runs tag/version check, `make quality`, build, publish; every
-`fury.io` hit in tracked files uses `<account>` or `vars.GEMFURY_ACCOUNT`; `make quality` green; pushed. The task ends
+`fury.io` hit in tracked files uses `<account>` or `secrets.GEMFURY_ACCOUNT`; `make quality` green; pushed. The task ends
 at the owner setting `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`.
 
 **Split point:** if T-010's CI run is red on entry, fixing it is this

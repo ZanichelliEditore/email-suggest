@@ -34,11 +34,12 @@ build: deps ## compile src/ to dist/ (.js + .d.ts)
 # "exports" map and shipped .d.ts. npm reads project config next to the scratch
 # dir's package.json, not the repo's, so --userconfig brings the repo's .npmrc
 # along: update-notifier off, and ignore-scripts as a guard (no lifecycle
-# scripts exist today).
-pack-smoke: build ## pack the tarball, install it in a scratch dir, import, call and typecheck it
-	$(DEV) sh -c 'set -e; d=$$(mktemp -d); \
-	  npm pack --pack-destination "$$d"; \
-	  cp pack-smoke/* "$$d"; cd "$$d"; \
+# scripts exist today). The tarball stays in .pack/: publish.yml uploads that
+# file, the one this target tested (SPEC §9).
+pack-smoke: build ## pack the tarball into .pack/, install it in a scratch dir, import, call and typecheck it
+	$(DEV) sh -c 'set -e; rm -rf .pack; mkdir .pack; \
+	  npm pack --pack-destination .pack; \
+	  d=$$(mktemp -d); cp .pack/*.tgz pack-smoke/* "$$d"; cd "$$d"; \
 	  npm install --userconfig /app/.npmrc --no-audit --no-fund ./*.tgz; \
 	  node consumer.ts; \
 	  /app/node_modules/.bin/tsc -p tsconfig.json; \
