@@ -4,58 +4,52 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-28T17:03:57+02:00`
-- **Describes commit:** `6a1712d`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36440794072
-  (jobs `quality` and `checks` both success; observed via the public
-  Actions API, no `gh`). Dependabot's first `docker` update job, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36440800072,
-  succeeded and opened no PR (the digest pin is current).
+- **Written:** `2026-09-29T11:29:38+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** filled
+  by the stamp commit.
 
-- **Current task:** T-002 (Docker dev environment), `done (2026-09-28)`.
-  See `docs/tasks/T-002-docker-dev-env.md` § Done.
+- **Current task:** T-003 (JS toolchain; Biome in the gate and the
+  pre-commit hook), `done (2026-09-29)`. See
+  `docs/tasks/T-003-js-toolchain-biome.md` § Done.
 
-- **Next action:** `/resume`, then T-003 (JS toolchain; Biome in the gate
-  and the pre-commit hook), `docs/tasks/T-003-js-toolchain-biome.md`.
+- **Next action:** `/resume`, then T-004 (`distance.ts`; typecheck, vitest
+  and `make build` join the gate), `docs/tasks/T-004-distance.md`.
 
 - **Read before anything else:**
-  - Every JS step runs through `docker compose run --rm dev …` (SPEC §7).
-    The container runs as the host UID:GID: the Makefile exports
-    `HOST_UID`/`HOST_GID` globally, and `compose.yaml` falls back to 1000.
-    Why: `docs/journal.md` 2026-09-28 (T-002).
-  - `HOME=/tmp` in the image and `--rm` on every run: npm's cache does not
-    survive a run. T-003 decides whether `npm ci` needs a cache volume.
-  - `node_modules` lives in the named volume `email-suggest_node_modules`.
-    The empty root-owned `./node_modules/` on the host is Docker's mount
-    point and is gitignored.
-  - T-003 must add the `npm` Dependabot entry the same way as `docker`
-    (`.github/dependabot.yml`: ignore semver-major, one group with no
-    `update-types` filter), and settle `docs/improvements.md`'s entry on
-    whether the major ignore suppresses security PRs.
+  - JS tools run as `$(DEV) node_modules/.bin/<tool>` (see `BIOME`),
+    never `npx <tool>`: `docs/journal.md` 2026-09-29. T-004's `tsc` and
+    vitest targets follow the same pattern and depend on `make deps`.
+  - `make deps` reinstalls only when `DEPS_INPUTS` (`Makefile`) change; a
+    `Dockerfile` change still needs a manual `docker compose build`
+    (`docs/improvements.md`).
+  - `make biome` passes `--error-on-warnings`: Biome exits 0 on warnings.
+  - CI (`quality.yml`) does not run Biome; only local `make quality` and
+    the hook do, until Phase 2 moves CI onto `make quality`.
 
-- **Reviews:** `code-reviewer`, one full round on the T-002 diff:
-  0 blockers, 2 should-fix, 3 nits. Applied: the run-user decision is
-  recorded (journal and task file); the improvements digest-grouping entry
-  is closed; the Dependabot comment now says "digest refreshes only".
-  Handed to T-003: the npm cache nit. Dismissed: the Makefile global
-  `export` nit (intended, T-003's targets need it). Every fix changed
-  wording only, not a mechanism, so no scoped round (rule 9).
+- **Reviews:** `code-reviewer`, full round on the T-003 diff: 0 blockers,
+  2 should-fix (both confirmed by probe and fixed: `npx biome` would fetch
+  npm's unrelated `biome` package; warnings exited 0), 6 nits applied.
+  Scoped round on the mechanism fixes (binary path, `--error-on-warnings`,
+  stamp inputs, hook `files`/`stages`): nothing falsifies an acceptance
+  line or fails open; 4 items parked in `docs/improvements.md`
+  (2026-09-29).
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - Dependabot `docker` grouping is reasoned, not observed: the first
-    weekly run confirms it.
-  - Carried from T-001: the repo is public although the owner said
-    "internal use"; Dependabot security updates are unverified (no `gh`);
-    arm64 is unverified (x86_64 host only).
+  - Dependabot `ignore` also covering security updates is documented, not
+    observed; whether security updates are enabled in repo settings is
+    unverified (no `gh`).
+  - Carried: Dependabot `docker`/`npm` grouping reasoned, not observed;
+    the repo is public although the owner said "internal use"; arm64
+    unverified (x86_64 host only).
 
 - **Dead ends:** none.
 
 - **Known red:** none.
 
-- **Checkpoint:** `make quality`: ruff "All checks passed!", 2 files
-  already formatted, `tools/checks` 5 tests OK, gitleaks (tree) Passed,
-  gitleaks (history) Passed. T-002 acceptance by hand:
-  `docker compose run --rm -T dev node --version` printed `v24.21.0`.
+- **Checkpoint:** `make quality`: Biome check "Checked 2 files … No fixes
+  applied.", ruff "All checks passed!", 2 files already formatted, Biome
+  format "Checked 2 files … No fixes applied.", `tools/checks` 5 tests OK,
+  gitleaks (tree) Passed, gitleaks (history) Passed.
+  `pre-commit run biome --all-files` Passed.

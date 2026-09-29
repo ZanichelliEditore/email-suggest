@@ -1,0 +1,14 @@
+{
+  "formatter": {
+    "useEditorconfig": true
+  },
+  "files": {
+    "includes": [
+      "src/**",
+      "test/**",
+      "*.json",
+      "!.*.json",
+      "!package-lock.json"
+    ]
+  }
+}

@@ -46,6 +46,18 @@ repos:
         files: ^docs/rfc/.*\.md$
   - repo: local
     hooks:
+      # Check-only, the same `make biome` the gate runs: a commit that passes
+      # the hook passes Biome in `make quality`. `make format` fixes.
+      - id: biome
+        name: biome check (dev container)
+        entry: make biome
+        language: system
+        pass_filenames: false
+        # .editorconfig sets Biome's indent (biome.json useEditorconfig).
+        files: ^(src/|test/|[^/]+\.json$|\.editorconfig$)
+        stages: [pre-commit]
+  - repo: local
+    hooks:
       - id: tools-checks-tests
         name: tools/checks tests (pre-push)
         entry: env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE python3 -m unittest discover -s tools/checks

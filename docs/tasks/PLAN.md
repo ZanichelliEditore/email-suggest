@@ -19,7 +19,7 @@ Ordered task list. One task = one session (SPEC.md
 
 **Sizing calibration:** tasks that overflowed: 0 · tasks split after the
 fact: 0 · sessions that ran two tasks: 1 · split points set at planning and
-taken: 0 · split points set at planning and not needed: 1.
+taken: 0 · split points set at planning and not needed: 2.
 
 ## Phase 0: setup
 
@@ -41,7 +41,7 @@ Node 24 over 22: SPEC §7 and T-002's acceptance now say `v24.`.
 |---|---|---|---|---|---|
 | T-001 | Dev-stack RFC (typescript, vitest, biome, node image) | plan | none | RFC in `docs/rfc/active/` with `- **Status:** Active`, rfc-reviewer findings resolved, owner acceptance recorded; `make quality` green | done (2026-09-28) |
 | T-002 | Docker dev environment | build | T-001 | `make shell` opens a container shell; `docker compose run --rm -T dev node --version` prints `v24.`; `make help` lists `shell`; `make quality` green | done (2026-09-28) |
-| T-003 | JS toolchain; Biome in the gate and the pre-commit hook | build | T-002 | `make quality` green and shows Biome's check; `pre-commit run biome --all-files` passes; `grep -nE '^\s+(npm\|npx\|node) ' Makefile` empty | todo |
+| T-003 | JS toolchain; Biome in the gate and the pre-commit hook | build | T-002 | `make quality` green and shows Biome's check; `pre-commit run biome --all-files` passes; `grep -nE '^\s+(npm\|npx\|node) ' Makefile` empty | done (2026-09-29) |
 | T-004 | `distance.ts`; typecheck, vitest and `make build` join the gate | build | T-003 | `make quality` green with vitest passing `test/distance.test.ts` (both empty, `""`/`abc` = 3, identical, one swap, `lgmai.com`/`gmail.com` = 2, `ca`/`abc` = 3) and typecheck run; `make build` emits `dist/distance.js` + `.d.ts` | todo |
 | T-005 | Known-domain list, with its guards | build | T-004 | `make quality` green with `test/domains.test.ts` passing: no duplicates, all lowercase | todo |
 | T-006 | TLD typo map, with its guard | build | T-004 | `make quality` green with `test/tld-typos.test.ts` passing: no key in the real-TLD set | todo |

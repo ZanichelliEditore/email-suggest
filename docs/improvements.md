@@ -12,4 +12,7 @@ that needs a real decision into an RFC in `docs/rfc/proposed/`.
 
 - [a1b2c3d · YYYY-MM-DD] _Add the first gap or deferred idea here._
 - [5d46e69 · 2026-09-28] docs/rfc/active/2026-09-28-dev-stack.md:125 — arm64 bullet says 'all three tools' publish arm64 builds; the native binaries are TypeScript, Biome and rolldown (vitest's native part), not vitest itself. Wording only (T-001 scoped rfc-reviewer round, parked).
-- [49d4081 · 2026-09-28] T-003: confirm whether Dependabot's ignore of version-update:semver-major also suppresses security-update PRs; if so, record in docs/rfc/active/2026-09-28-dev-stack.md ('Majors are manual') that a fix needing a major arrives only as an alert (T-001 scoped rfc-reviewer round, handed to T-003).
+- [3eab034 · 2026-09-29] .github/workflows/quality.yml:24-26 — CI runs ruff and gitleaks directly, never Biome: CI green does not mean Biome passed until CI runs make quality through Docker (SPEC §8, Phase 2) (T-003 scoped review, parked).
+- [3eab034 · 2026-09-29] Makefile:62 — a Dockerfile change alters the deps stamp, but docker compose run does not rebuild the image, so npm ci reruns in the old image; a rebuild is still manual (docker compose build) (T-003 scoped review, parked).
+- [3eab034 · 2026-09-29] Makefile:69 — --error-on-warnings does not fail on info-level diagnostics; unchecked whether any Biome 2.5 recommended rule defaults to info (T-003 scoped review, parked).
+- [3eab034 · 2026-09-29] Makefile:59-61 — deps comment says 'only when package.json or the lockfile differ' then adds .npmrc and Dockerfile; wording lags DEPS_INPUTS (T-003 scoped review, parked).

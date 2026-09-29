@@ -21,3 +21,16 @@ updates:
     groups:
       docker:
         patterns: ["*"]
+  # Same rule as `docker`. The ignore also covers security updates, so a fix
+  # that needs a major arrives as an alert only (dev-stack RFC, "Majors are
+  # manual").
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      npm:
+        patterns: ["*"]

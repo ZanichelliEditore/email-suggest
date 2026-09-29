@@ -59,3 +59,21 @@ stands for. End an entry with the task id it came from.
   mount point on the host, root-owned: `./node_modules/` appears empty and
   owned by root after the first `docker compose run`. It is gitignored;
   `git clean` can still remove it. (T-002)
+
+## 2026-09-29
+
+- `npx <name>` with the tool missing from `node_modules` fetches the
+  registry package of that *name* and, with no TTY (`-T`), installs it
+  without a prompt. npm's `biome` is an unrelated package (0.3.3, env
+  vars), not `@biomejs/biome`: a gate on `npx biome` could pass with no
+  Biome run. Call `node_modules/.bin/<tool>` instead. (T-003)
+- `biome check` exits 0 on warnings, and `noUnusedImports` is a
+  warn-level recommended rule in Biome 2.5: the gate needs
+  `--error-on-warnings`. (T-003)
+- Biome 2.5 formats with tabs by default and ignores `.editorconfig`
+  unless `formatter.useEditorconfig` is `true`. (T-003)
+- `npm ci` works with `node_modules` as a named-volume mount point (no
+  `EBUSY`), probed on the T-002 image. (T-003)
+- Dependabot: `ignore` rules apply to security updates as well as version
+  updates; GitHub's "security updates are always created regardless of
+  `update-types`" note is under `allow`, not `ignore`. (T-003)

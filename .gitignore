@@ -10,3 +10,5 @@ __pycache__/
 .claude/.compacted
 # the mount point of the container's node_modules volume (compose.yaml)
 node_modules/
+# tsc output (make build)
+dist/
