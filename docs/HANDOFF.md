@@ -5,7 +5,11 @@
 "none".*
 
 - **Written:** `2026-09-29T15:47:45+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<pending>`. T-007's code is `696118f`; this commit adds only the T-008 row.
+- **Describes commit:** `13d94e7`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36577810495
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
+  T-007's code is `696118f`; `13d94e7` adds only the T-008 row.
 
 - **Current task:** T-007 (`suggest()` and Phase 1 close),
   `done (2026-09-29)`. See `docs/tasks/T-007-suggest.md` § Done. **Phase 1
