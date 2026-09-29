@@ -4,73 +4,69 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T15:47:45+02:00`
-- **Describes commit:** `13d94e7`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36577810495
-  (jobs `quality` and `checks` both success; observed with `gh run view`).
-  T-007's code is `696118f`; `13d94e7` adds only the T-008 row.
+- **Written:** `2026-09-29T16:00:22+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
+  `<pending>`.
 
-- **Current task:** T-007 (`suggest()` and Phase 1 close),
-  `done (2026-09-29)`. See `docs/tasks/T-007-suggest.md` § Done. **Phase 1
-  is done:** SPEC §13 acceptance is met. No-Node gate below; `make shell`
-  was shown in T-002 and the Biome pre-commit hook in T-003, and that hook
-  ran on this commit.
+- **Current task:** `/plan Phase 2` (a plan session with no PLAN row),
+  `done (2026-09-29)`. Phase 2 is planned: T-008 to T-013 are `todo` in
+  `docs/tasks/PLAN.md` § Phase 2, each with its task file. The owner
+  approved the plan on 2026-09-29, and the re-plan note records the
+  owner's decisions.
 
-- **Next action:** `/resume`, then `/plan Phase 2`. PLAN.md has no Phase 2
-  rows yet. `/plan` must place, size and confirm the `proposed` row T-008.
+- **Next action:** `/resume`, then take T-008
+  (`docs/tasks/T-008-non-string-input.md`).
 
 - **Read before anything else:**
-  - `src/index.ts` exports only `suggest` and `Suggestion`
-    (`test/suggest.test.ts::suggest is the only runtime export`).
-    `boundedDistance` skips `distance()` when the length difference alone
-    exceeds the bound. This changes no result, and it keeps a 1 MB input
-    linear (it was 13 s and 714 MB before).
-  - Parked for Phase 2, in `docs/improvements.md`:
-    - `package.json` has no `"files"` field, so the tarball would miss
-      `dist/`;
-    - CI runs no Biome, tsc or vitest;
-    - there is no make target for the no-Node gate.
+  - Owner decisions (PLAN.md § Phase 2 re-plan note):
+    - T-008: no RFC, and `email: string` stays in the `.d.ts`.
+    - T-013: Vite is the lockfile-pinned `node_modules/.bin/vite` (confirmed
+      present). It comes in through vitest, so it isn't a new dependency.
+    - `consumer-check` is a make target outside `quality`.
+    - A wait on a green CI run ends the task.
+  - Split points drawn: T-009, T-011 (a red T-010 run on entry is the
+    whole session), T-013 (the phase close becomes T-014).
+  - Owner actions outside the repo:
+    - Before T-012: the repo variable `GEMFURY_ACCOUNT` and the secret
+      `GEMFURY_PUSH_TOKEN`.
+    - At T-012: an explicit go for the tag push.
+    - Before T-013: a Gemfury read token and the account slug in the
+      gitignored `.env`.
 
-- **Reviews:**
-  - **Full `code-reviewer` round on the Phase 1 diff:** 0 blockers,
-    3 should-fix, 5 nits. Applied: the `x@.con` test, the
-    `docs/architecture/overview.md` Product section, the trimmed-row test,
-    the `?? ""` / double-null simplifications and the step-1.1/1.2
-    fall-through comment. The owner chose the length bound (A) over a
-    253-character cap. Dismissed: "`Suggestion` is the only type export"
-    can't be tested at runtime; the Phase 2 `.d.ts` consumer check covers
-    it.
-  - **`/security-review`, run in the main session:** the skill failed on
-    the unset `origin/HEAD`. One should-fix, the long-input cost, fixed as
-    above. `suggest(null)` throwing was dismissed: §3 covers strings only.
-  - **Scoped `code-reviewer` round on the bound:** 0 findings against
-    acceptance or fail-open. One park: a false test comment (fixed,
-    comment only) and a step-1.2-bound coverage gap (parked,
-    `test/suggest.test.ts:69-72`).
+- **Reviews:** `planner` proposed the decomposition. One `code-reviewer`
+  round on the plan diff: 0 blockers, 4 should-fix, 3 nits, all applied.
+  - Should-fix:
+    - T-011 split point.
+    - The `fury.io` placeholder grep replaces the unrunnable "grep the real
+      account name".
+    - T-013 `.env` needs the account slug.
+    - T-011 files gain `overview.md`, `compose.yaml` and `fetch-depth: 0`.
+  - Nits:
+    - T-012 version-bump branch.
+    - T-013 row's findings clause.
+    - The T-014 split carries the findings clause.
 
-- **Proposed plan changes:** T-008, "`suggest` returns null for
-  non-string input; SPEC §3 amendment" (PLAN.md § Raised after Phase 1
-  close). Owner decision, 2026-09-29.
+- **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - T-007: `suggest(null)` throws. The owner decided on 2026-09-29 that it
-    should return null, so this is now T-008. Still open: does the §3
-    amendment need an RFC, or is the owner's SPEC amendment enough (as
-    with step 1.2)?
-  - T-007: the no-Node demo shims `/usr/bin` rather than removing it
-    (journal, 2026-09-29).
-  - Carried: Dependabot `docker`/`npm` grouping reasoned, not observed;
-    repo is public although the owner said "internal use"; arm64
-    unverified; first secret-scanning history scan (enabled 2026-09-29)
-    not re-checked.
+  - Carried from T-007: the no-Node demo shims `/usr/bin`, but this host
+    also has `/usr/local/bin/node`. `command -v node` stays non-empty after
+    stripping nvm from `PATH` (seen at `/resume` on 2026-09-29).
+    `make quality-no-node` stays parked.
+  - Carried:
+    - Dependabot `docker`/`npm` grouping is reasoned, not observed.
+    - The repo is public, although the owner said "internal use".
+    - arm64 is unverified.
+    - The first secret-scanning history scan (enabled 2026-09-29) hasn't
+      been re-checked.
+    - Whether Gemfury allows deleting a published version is unverified
+      (matters for T-012).
 
-- **Dead ends:** the `/security-review` skill needs `origin/HEAD` and
-  committed work (journal, 2026-09-29).
+- **Dead ends:** none.
 
 - **Known red:** none.
 
-- **Checkpoint:** `make quality` with `command -v node` empty:
+- **Checkpoint:** `make quality` exit 0:
   - Biome check "Checked 12 files … No fixes applied." and ruff "All
     checks passed!";
   - 2 files already formatted; Biome format "Checked 12 files … No fixes
@@ -79,7 +75,4 @@
   - `tools/checks`: 5 tests OK;
   - vitest: 4 files passed, 55 tests passed (`suggest` 43, `distance` 9,
     `domains` 2, `tld-typos` 1);
-  - gitleaks (tree) and gitleaks (history) Passed;
-  - "make quality exit: 0".
-
-  `make build` exit 0: `dist/index.js`, `dist/index.d.ts`.
+  - gitleaks (tree) and gitleaks (history) Passed.

@@ -47,11 +47,27 @@ Node 24 over 22: SPEC §7 and T-002's acceptance now say `v24.`.
 | T-006 | TLD typo map, with its guard | build | T-004 | `make quality` green with `test/tld-typos.test.ts` passing: no key in the real-TLD set | done (2026-09-29) |
 | T-007 | `suggest()` and Phase 1 close | build | T-004, T-005, T-006 | `make quality` green with Node's dirs removed from `PATH` (`command -v node` empty); vitest passes every §10 row and the "no list entry is suggested" guard; `make build` emits `dist/index.js` + `.d.ts` | done (2026-09-29) |
 
-## Raised after Phase 1 close
+## Phase 2: distribution
 
-*Raised at T-007's handoff, 2026-09-29: the owner decided `suggest(null)`
-returns null. `/plan` places and sizes the row.*
+*Re-plan note (2026-09-29):* planned by `/plan Phase 2`, approved by the
+owner the same day. T-008, raised `proposed` at T-007's handoff, is sized
+here as the phase's first row: it lands before `0.1.0` is packed. Owner
+decisions at plan review: T-008 needs no RFC (owner SPEC amendment, as with
+step 1.2) and keeps `email: string` in the `.d.ts`; T-013 reuses the
+lockfile-pinned Vite (no new dependency) and imports the installed package
+with Node; `consumer-check` is a make target outside `quality`; CI keeps its
+`gitleaks-action` job; a wait on a green CI run ends the task (§14.1, read
+literally); `make quality-no-node` stays parked. Split points drawn: T-009,
+T-011, T-013. At the plan's `code-reviewer` round (2026-09-29): T-011 got
+its split point (a red T-010 run ends the session) and a checkable
+account-name line; T-013's `.env` holds the account slug too; T-013's row
+now asks findings resolved.
 
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
-| T-008 | `suggest` returns null for non-string input; SPEC §3 amendment | build | T-007 | SPEC §3 says `suggest` never throws and returns `null` for any non-string argument; `test/suggest.test.ts` covers `null`, `undefined`, a number and an object; `make quality` green | proposed |
+| T-008 | `suggest` returns null for non-string input; SPEC §3 amendment | build | T-007 | SPEC §3 says `suggest` never throws and returns `null` for any non-string argument; `test/suggest.test.ts` covers `null`, `undefined`, a number and an object; `make quality` green | todo |
+| T-009 | Pack smoke test in the gate; `"files": ["dist"]` | build | T-008 | `make quality` green and shows `pack-smoke` passing (import, one call, consumer typecheck against the shipped `.d.ts`); with `"files"` removed, `make pack-smoke` fails | todo |
+| T-010 | CI runs `make quality` through Docker | build | T-009 | `quality.yml`'s `quality` job has one gate step, `make quality`; `make quality` green locally; pushed to `main` (the task ends at the push) | todo |
+| T-011 | Publish workflow; README consumer docs | build | T-010 | T-010's CI run is green on entry; `publish.yml` triggers only on `v*.*.*` and runs tag/version check, `make quality`, build, publish; every `fury.io` hit in tracked files uses `<account>` or `vars.GEMFURY_ACCOUNT`; `make quality` green; pushed (ends at the owner setting `GEMFURY_ACCOUNT` and `GEMFURY_PUSH_TOKEN`) | todo |
+| T-012 | Release `v0.1.0` | build | T-011 | CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag `v0.1.0` pushed after the owner's explicit go (ends at the wait for the publish run) | todo |
+| T-013 | Consumer check and Phase 2 close | build | T-012 | publish run for `v0.1.0` green; `make consumer-check` exits 0 (0.1.0 from Gemfury into a scratch Vite project in the container's `/tmp`, `vite build` succeeds, `deepStrictEqual` on `suggest("mario@lgmai.com")`); CI green for the tagged commit; `/review` and `/security-review` run, findings resolved or dismissed with a reason | todo |
