@@ -19,7 +19,7 @@ Ordered task list. One task = one session (SPEC.md
 
 **Sizing calibration:** tasks that overflowed: 0 · tasks split after the
 fact: 0 · sessions that ran two tasks: 1 · split points set at planning and
-taken: 0 · split points set at planning and not needed: 2.
+taken: 0 · split points set at planning and not needed: 3.
 
 ## Phase 0: setup
 
@@ -45,4 +45,4 @@ Node 24 over 22: SPEC §7 and T-002's acceptance now say `v24.`.
 | T-004 | `distance.ts`; typecheck, vitest and `make build` join the gate | build | T-003 | `make quality` green with vitest passing `test/distance.test.ts` (both empty, `""`/`abc` = 3, identical, one swap, `lgmai.com`/`gmail.com` = 2, `ca`/`abc` = 3) and typecheck run; `make build` emits `dist/distance.js` + `.d.ts` | done (2026-09-29) |
 | T-005 | Known-domain list, with its guards | build | T-004 | `make quality` green with `test/domains.test.ts` passing: no duplicates, all lowercase | done (2026-09-29) |
 | T-006 | TLD typo map, with its guard | build | T-004 | `make quality` green with `test/tld-typos.test.ts` passing: no key in the real-TLD set | done (2026-09-29) |
-| T-007 | `suggest()` and Phase 1 close | build | T-004, T-005, T-006 | `make quality` green with Node's dirs removed from `PATH` (`command -v node` empty); vitest passes every §10 row and the "no list entry is suggested" guard; `make build` emits `dist/index.js` + `.d.ts` | todo |
+| T-007 | `suggest()` and Phase 1 close | build | T-004, T-005, T-006 | `make quality` green with Node's dirs removed from `PATH` (`command -v node` empty); vitest passes every §10 row and the "no list entry is suggested" guard; `make build` emits `dist/index.js` + `.d.ts` | done (2026-09-29) |

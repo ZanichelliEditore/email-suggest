@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 1
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-004, T-005, T-006
 - **Created:** 2026-09-28
 
@@ -49,18 +49,34 @@ review, security review, no-Node demonstration) becomes its own task.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `src/index.ts`: `suggest`, `Suggestion`; step 1 (1.1–1.5), step 2,
+  `boundedDistance` length bound (security-review fix, result-preserving).
+- `test/suggest.test.ts`: `suggest(%j) = %j` (21 §10 rows + trimmed
+  suggestion), `suggest(%j) = null` (16 §10 rows + `x@.con`),
+  `no list entry is ever suggested`, `a 1 MB domain returns null quickly
+  (%#)` ×2, `suggest is the only runtime export`.
+- Mutation probes, each caught: step 1.2 off, tie `<=`, threshold 6→5,
+  typo-key exemption off, bound `>=`, bound off, step-1.2 max 0.
+- No-Node run: `command -v node` empty, `make quality` exit 0 (4 files,
+  55 tests), `make build` exit 0 with `dist/index.{js,d.ts}`. Method in
+  `docs/journal.md` (2026-09-29).
+- `docs/architecture/overview.md`: Product components and dependency rules.
+- Commit: see HANDOFF.md "Describes commit".
 
 ## Dead ends
-none
+- The `/security-review` skill failed: it runs `git diff origin/HEAD...`,
+  `origin/HEAD` isn't set, and it only sees committed work. I redid the
+  review in the main session.
 
 ## Open doubts
-none
+- `suggest(null)` from untyped JavaScript throws `TypeError`. I dismissed
+  this because §3 promises no throw only for strings. Owner to confirm.
+- The no-Node demo shims `/usr/bin` rather than removing it (Node sits
+  beside bash, make and docker there). `command -v node` is empty, but no
+  directory was actually taken out of `PATH`.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

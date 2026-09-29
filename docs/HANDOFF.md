@@ -4,52 +4,73 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T15:16:52+02:00`
-- **Describes commit:** `0774cd4`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36574003789
-  (jobs `quality` and `checks` both success; observed with `gh run view`).
+- **Written:** `2026-09-29T15:43:44+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<pending>`
 
-- **Current task:** T-006 (TLD typo map, with its guard),
-  `done (2026-09-29)`. See `docs/tasks/T-006-tld-typos.md` § Done.
+- **Current task:** T-007 (`suggest()` and Phase 1 close),
+  `done (2026-09-29)`. See `docs/tasks/T-007-suggest.md` § Done. **Phase 1
+  is done:** SPEC §13 acceptance is met. No-Node gate below; `make shell`
+  was shown in T-002 and the Biome pre-commit hook in T-003, and that hook
+  ran on this commit.
 
-- **Next action:** `/resume`, then T-007 (`suggest()` and Phase 1 close),
-  `docs/tasks/T-007-suggest.md`. All its dependencies (T-004, T-005, T-006) are
-  done.
+- **Next action:** `/resume`, then `/plan Phase 2`. PLAN.md has no Phase 2
+  rows yet.
 
 - **Read before anything else:**
-  - `src/tld-typos.ts` exports `tldTypos: ReadonlyMap<string, string>`.
-    Look up with `tldTypos.get(label)` / `.has(label)`; it is a Map so an
-    untrusted label like `constructor` finds nothing (journal, T-006).
-  - `src/domains.ts` exports `domains: readonly string[]`, SPEC §5 order.
-    The content of both lists is proven only by T-007's §10 rows.
-  - Tests import sources as `../src/<name>.js` (NodeNext); vitest maps it
-    to the `.ts`.
-  - CI (`quality.yml`) runs neither Biome, tsc nor vitest; only local
-    `make quality` does, until Phase 2.
+  - `src/index.ts` exports only `suggest` and `Suggestion`
+    (`test/suggest.test.ts::suggest is the only runtime export`).
+    `boundedDistance` skips `distance()` when the length difference alone
+    exceeds the bound. This changes no result, and it keeps a 1 MB input
+    linear (it was 13 s and 714 MB before).
+  - Parked for Phase 2, in `docs/improvements.md`:
+    - `package.json` has no `"files"` field, so the tarball would miss
+      `dist/`;
+    - CI runs no Biome, tsc or vitest;
+    - there is no make target for the no-Node gate.
 
-- **Reviews:** `code-reviewer`, full round on the T-006 diff: 0 blockers,
-  0 should-fix, 2 nits. Owner's call: guard comment overclaimed
-  completeness (applied: reworded to "hand-picked", added `itv ntt ong tj
-  tl tn`); guard passes an empty map (dismissed: T-007's §10 rows catch
-  it, same call as T-005). No scoped round: the fix changed no mechanism.
+- **Reviews:**
+  - **Full `code-reviewer` round on the Phase 1 diff:** 0 blockers,
+    3 should-fix, 5 nits. Applied: the `x@.con` test, the
+    `docs/architecture/overview.md` Product section, the trimmed-row test,
+    the `?? ""` / double-null simplifications and the step-1.1/1.2
+    fall-through comment. The owner chose the length bound (A) over a
+    253-character cap. Dismissed: "`Suggestion` is the only type export"
+    can't be tested at runtime; the Phase 2 `.d.ts` consumer check covers
+    it.
+  - **`/security-review`, run in the main session:** the skill failed on
+    the unset `origin/HEAD`. One should-fix, the long-input cost, fixed as
+    above. `suggest(null)` throwing was dismissed: §3 covers strings only.
+  - **Scoped `code-reviewer` round on the bound:** 0 findings against
+    acceptance or fail-open. One park: a false test comment (fixed,
+    comment only) and a step-1.2-bound coverage gap (parked,
+    `test/suggest.test.ts:69-72`).
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
+  - T-007: `suggest(null)` throws, dismissed pending the owner's view. The
+    no-Node demo shims `/usr/bin` rather than removing it (journal,
+    2026-09-29).
   - Carried: Dependabot `docker`/`npm` grouping reasoned, not observed;
     repo is public although the owner said "internal use"; arm64
     unverified; first secret-scanning history scan (enabled 2026-09-29)
     not re-checked.
 
-- **Dead ends:** none.
+- **Dead ends:** the `/security-review` skill needs `origin/HEAD` and
+  committed work (journal, 2026-09-29).
 
 - **Known red:** none.
 
-- **Checkpoint:** `make quality`: Biome check "Checked 10 files … No fixes
-  applied.", ruff "All checks passed!", 2 files already formatted, Biome
-  format "Checked 10 files … No fixes applied.", tsc typecheck exit 0,
-  `tools/checks` 5 tests OK, vitest 3 files passed, 12 tests passed
-  (`distance` 9, `domains` 2, `tld-typos` 1), gitleaks (tree) Passed,
-  gitleaks (history) Passed. `make build`: `dist/{distance,domains,
-  tld-typos}.{js,d.ts}`.
+- **Checkpoint:** `make quality` with `command -v node` empty:
+  - Biome check "Checked 12 files … No fixes applied." and ruff "All
+    checks passed!";
+  - 2 files already formatted; Biome format "Checked 12 files … No fixes
+    applied.";
+  - tsc exit 0;
+  - `tools/checks`: 5 tests OK;
+  - vitest: 4 files passed, 55 tests passed (`suggest` 43, `distance` 9,
+    `domains` 2, `tld-typos` 1);
+  - gitleaks (tree) and gitleaks (history) Passed;
+  - "make quality exit: 0".
+
+  `make build` exit 0: `dist/index.js`, `dist/index.d.ts`.

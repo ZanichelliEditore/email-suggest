@@ -1,9 +1,5 @@
 # Architecture overview
 
-> Brand-new project — only the agent-native scaffolding exists so far. The tooling
-> components below are pre-filled (the wizard built them); add the product
-> components and dependency rules as real code lands.
-
 ## Components
 
 ### Tooling & process
@@ -17,9 +13,14 @@
 
 ### Product
 
-_TODO: list the application's own components and their responsibilities as they land._
+A zero-dependency library ([SPEC](../../SPEC.md) §3–§5). Phase 1 (T-004 to T-007).
+
+- **`src/index.ts`** — `suggest()` and the `Suggestion` type, the package's only exports: parses the address and runs the two matching steps of SPEC §4.
+- **`src/distance.ts`** — Damerau-Levenshtein, optimal-string-alignment variant.
+- **`src/domains.ts`** — the known-domain list, in priority order (SPEC §5).
+- **`src/tld-typos.ts`** — the TLD typo map, typo to fix (SPEC §5).
 
 ## Dependency rules
 
-_TODO: state which parts may depend on which. Enforce mechanically (e.g. with an
-architecture test) once the boundaries stabilize._
+- `index.ts` imports the other three; they import nothing.
+- Only `index.ts` is public: `package.json` `exports` maps `.` to `dist/index.*` and nothing else, and `test/suggest.test.ts` checks that `suggest` is its only runtime export. The import direction is not enforced mechanically.

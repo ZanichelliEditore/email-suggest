@@ -90,3 +90,17 @@ stands for. End an entry with the task id it came from.
   object literal: `obj["constructor"]` returns `Object.prototype`'s member,
   so a `Record` lookup fails open unless every call site uses
   `Object.hasOwn`. `src/tld-typos.ts` is a `ReadonlyMap`. (T-006)
+- The no-Node gate can't just drop Node's directories from `PATH` on this
+  host: `node` is also in `/usr/bin` and `/usr/local/bin`, beside `bash`,
+  `make` and `docker`. The T-007 demo used a scratch directory of symlinks
+  to every executable there except `node`, `nodejs`, `npm`, `npx` and
+  `corepack`, plus `~/.local/bin` (pre-commit), so `command -v node` was
+  empty. (T-007)
+- `/security-review` diffs `origin/HEAD...`: it fails when `origin/HEAD`
+  isn't set, and even then it sees only committed work. For an uncommitted
+  task, run the review in the main session. (T-007)
+- `distance()` is linear in the longer input when the other is short, but
+  it allocates a row array per character. A 1 MB domain against the 32
+  known ones took 13 s and 714 MB. `suggest` skips the computation when
+  the length difference alone exceeds the bound, which changes no result
+  because OSA distance ≥ the length difference. (T-007 security review)
