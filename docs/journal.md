@@ -86,3 +86,7 @@ stands for. End an entry with the task id it came from.
   swap at position 1: a cost-2 substitution and a `i > 2` swap guard both
   passed them. Mutation-probe each cost of a metric, not just the case
   that tells variants apart. (T-004)
+- A lookup table keyed by untrusted input should be a `Map`, not an
+  object literal: `obj["constructor"]` returns `Object.prototype`'s member,
+  so a `Record` lookup fails open unless every call site uses
+  `Object.hasOwn`. `src/tld-typos.ts` is a `ReadonlyMap`. (T-006)

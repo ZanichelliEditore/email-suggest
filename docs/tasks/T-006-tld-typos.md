@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** 1
-- **Status:** todo
+- **Status:** done (2026-09-29)
 - **Depends on:** T-004
 - **Created:** 2026-09-28
 
@@ -35,7 +35,17 @@ real TLD.
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- Commit `T-006: TLD typo map with its guard` (hash in `docs/HANDOFF.md`).
+- `src/tld-typos.ts::tldTypos`, `ReadonlyMap<string, string>`, 14 entries
+  in SPEC.md §5 table order. A Map rather than a Record, so T-007's lookup
+  of an untrusted label (`constructor`) cannot hit `Object.prototype`.
+- `test/tld-typos.test.ts::no typo key is a real TLD`, against a
+  hand-picked set of 32 real TLDs: the 11 SPEC requires, the 4 fixes
+  (`com it net org`), and neighbours of the keys (`cn et gr iq ir itv no
+  ntt ong ro tj tl tn to tr tt tv`).
+- Mutation probe: adding key `co` fails the guard with `co: expected true
+  to be false`.
+- `make build` emits `dist/tld-typos.js` + `dist/tld-typos.d.ts`.
 
 ## Dead ends
 none
@@ -44,9 +54,7 @@ none
 none
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).
