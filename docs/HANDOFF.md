@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-01T15:27:50+02:00`
-- **Describes commit:** `<hash>` (filled by the stamp commit). **CI:**
-  `<run>`.
+- **Describes commit:** `ceff92f`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36868959496
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-015 (`docs/tasks/T-015-usage-docs-demo.md`),
   `done (2026-10-01)`. Owner request outside SPEC §13: README `## Usage`
