@@ -78,3 +78,13 @@ T-014 as the session's task, and during it reversed T-011's choice:
 | T-012 | Release `v0.1.0` | build | T-011 | CI green on the commit to tag; `package.json` `version` is `0.1.0`; tag `v0.1.0` pushed after the owner's explicit go (ends at the wait for the publish run) | done (2026-09-29) |
 | T-013 | Consumer check and Phase 2 close | build | T-012 | publish run for `v0.1.0` green; `make consumer-check` exits 0 (0.1.0 from Gemfury into a scratch Vite project in the container's `/tmp`, `vite build` succeeds, `deepStrictEqual` on `suggest("mario@lgmai.com")`); CI green for the tagged commit; `/review` and `/security-review` run, findings resolved or dismissed with a reason | done (2026-09-29) |
 | T-014 | Diagnose and fix the failed Gemfury upload of `v0.1.0` | build | T-012 | publish run for `v0.1.0` (re-run or new tag) green, and `0.1.0` listed on Gemfury; `make quality` green | done (2026-09-29) |
+
+## Owner requests (outside SPEC §13)
+
+*Note (2026-10-01):* with every phase closed, the owner asked at `/resume`
+for a usage example in the README and a demo page, and confirmed T-015 as
+`todo` the same day.
+
+| Id | Title | Type | Depends | Acceptance | Status |
+|---|---|---|---|---|---|
+| T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5173/`, and `curl` of it returns the page and of `/main.js` the module; `make quality` green | doing (2026-10-01) |
