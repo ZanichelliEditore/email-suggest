@@ -157,3 +157,16 @@ stands for. End an entry with the task id it came from.
   `<meta charset="utf-8" />` `biome format` then rejected: the HTML
   formatter wants void elements without ` /`. `make quality` runs both, so
   the gate caught it; the pre-commit hook runs only `check`. (T-013)
+
+## 2026-10-01
+
+- `make demo` runs Vite attached to a TTY (no `-T`) as the container's
+  PID 1, without `init`. Ctrl-C still stops it: Vite's shortcut handler
+  reads the `^C` byte from stdin and exits, so no SIGINT is needed. Checked
+  by piping `\003` into `script -qfc "make demo"`. (T-015)
+- A `main.js` under `examples/demo/` can import `../../dist/index.js`,
+  outside Vite's root: Vite serves it as `/@fs/app/dist/index.js` because
+  `server.fs.allow` defaults to the folder with `package.json` (`/app`).
+  Its default deny list still returns 403 for `/@fs/app/.env`. (T-015)
+- `npm pack` always ships `README.md`: the Usage section grew the tarball
+  from 9.1 kB to 10.4 kB unpacked, with the same 11 files. (T-015)

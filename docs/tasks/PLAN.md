@@ -87,4 +87,4 @@ for a usage example in the README and a demo page, and confirmed T-015 as
 
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
-| T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js` the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with `export function suggest`; `make quality` green | doing (2026-10-01) |
+| T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js` the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with `export function suggest`; `make quality` green | done (2026-10-01) |

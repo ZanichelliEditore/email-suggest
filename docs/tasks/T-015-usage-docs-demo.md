@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** none (owner request, outside SPEC §13)
-- **Status:** doing (2026-10-01)
+- **Status:** done (2026-10-01)
 - **Depends on:** T-013
 - **Created:** 2026-10-01
 
@@ -48,18 +48,32 @@ the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `abbe4f5`: README `## Usage` (import, SPEC §3 snippet, `Suggestion`,
+  `null` cases); examples checked against `dist/` in the container.
+- `0940097`: `examples/demo/{index.html,main.js}`, `make demo`
+  (`Makefile` `demo:`), `examples/**` in `biome.json` and the pre-commit
+  Biome pattern, `docs/architecture/overview.md` entry, review fixes.
+- Acceptance shown 2026-10-01 with `make demo` running: `/` 200 with
+  `id="email"`; `/main.js` has `from "/@fs/app/dist/index.js"`; that URL
+  200 with `export function suggest`. Ctrl-C (`\003` through a pty)
+  stopped it, no container left. `/@fs/app/.env` and `/@fs/etc/passwd`
+  403.
+- No unit test: README prose and a demo page (owner request); the README
+  examples were run against `dist/`, and `make quality` covers `suggest`.
 
 ## Dead ends
-none
+- Port 5173: another project's container holds it on this host, so the
+  first `make demo` failed ("port is already allocated"). Moved to 5180,
+  `DEMO_PORT` overrides.
 
 ## Open doubts
-none
+- The demo was checked with `curl`, not in a browser (the Playwright MCP
+  did not connect this session): the hint's click handler is unobserved.
+- `make format` doesn't apply the `<style>` formatting `make format-check`
+  requires (parked in `docs/improvements.md`).
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+low
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done).

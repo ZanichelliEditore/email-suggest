@@ -4,52 +4,46 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-09-29T19:35:16+02:00`
-- **Describes commit:** `ec7e6e3`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36606058001
-  (jobs `quality` and `checks` both success; observed with `gh run watch`).
+- **Written:** `2026-10-01T15:27:50+02:00`
+- **Describes commit:** `<hash>` (filled by the stamp commit). **CI:**
+  `<run>`.
 
-- **Current task:** T-013 (`docs/tasks/T-013-consumer-check.md`),
-  `done (2026-09-29)`. **Phase 2 closed**, and with it every phase in
-  SPEC §13.
-  - `make consumer-check` exit 0: `0.1.0` from Gemfury, `vite build`,
-    `deepStrictEqual` passed; failure path shown (task file "Done").
-  - CI green for tagged commit `7f3dc30`: runs 36600709140 (`quality`),
-    36601141874 (`publish`).
+- **Current task:** T-015 (`docs/tasks/T-015-usage-docs-demo.md`),
+  `done (2026-10-01)`. Owner request outside SPEC §13: README `## Usage`
+  (`abbe4f5`), `examples/demo/` + `make demo` on `127.0.0.1:5180`
+  (`0940097`). Acceptance shown with `curl` (task file "Done").
 
-- **Next action:** `/resume`. PLAN has no `todo` row left: ask the owner
-  whether to `/plan` a new phase (SPEC §13 would need one first) or to
-  triage `docs/improvements.md`.
+- **Next action:** `/resume`. PLAN has no `todo` row: ask the owner for
+  the next request, a `/plan`, or triage of `docs/improvements.md`.
 
 - **Read before anything else:**
-  - `make consumer-check` needs a Gemfury **deploy** token and the account
-    slug in the gitignored `.env` (`GEMFURY_TOKEN`, `GEMFURY_ACCOUNT`); a
-    push token gets 401 (`docs/journal.md`, 2026-09-29, T-013).
-  - `consumer-check/.npmrc` is tracked on purpose: only `${…}`
-    placeholders (task file note, owner-reviewed 2026-09-29).
-  - `/security-review` can't see pushed work (`origin/HEAD` unset); redo it
-    in the main session (`docs/journal.md`, T-013).
+  - `make demo` is interactive (no `-T`); Ctrl-C stops it. Port 5180, not
+    Vite's 5173 (held by another project's container on this host);
+    `DEMO_PORT=<n>` overrides (`Makefile` `demo:`).
+  - `make format` doesn't fix `<style>` formatting that `make
+    format-check` rejects; use `biome format --write <file>` in the
+    container (`docs/improvements.md`, 2026-10-01).
 
-- **Reviews:** `/review` (code-reviewer) on `git diff e33392a` + T-013:
-  0 blockers; 5 findings fixed (SPEC §11 wording on the owner's go, task
-  note, Biome hook pattern, gitleaks with fixture staged, overview entry).
-  Security review in the main session: no exploitable findings; publish
-  build/upload job split parked in `docs/improvements.md`.
+- **Reviews:** `/review` (code-reviewer) on `abbe4f5` + the staged demo
+  diff: 0 blockers. Fixed: acceptance now curls the `/@fs` dist import,
+  overview entry, README "only runtime export" and trimming, improvements
+  citation. Dismissed with evidence: "Ctrl-C won't stop it" (measured: it
+  does, journal 2026-10-01). No second round: fixes were docs only.
 
 - **Proposed plan changes:** none.
 
 - **Open doubts:**
-  - New: the first `.env` token may have been the repo push token (now on
-    the laptop); the push token created 2026-09-29 19:23 is unused.
-    Rotation/revocation of either: not confirmed.
-  - New: `make consumer-check` relies on vitest's Vite hoisted to
-    `node_modules/.bin/vite`.
-  - Carried:
+  - New: the demo was checked with `curl`, not in a browser (Playwright
+    MCP did not connect); the hint's click handler is unobserved.
+  - Carried from T-013's handoff, unchanged:
+    - Token rotation: the first `.env` token, the unused push token
+      created 2026-09-29 19:23, and the token pasted in chat 2026-09-29:
+      none confirmed.
+    - `make consumer-check` and `make demo` rely on vitest's Vite hoisted
+      to `node_modules/.bin/vite`.
     - `vars.GEMFURY_ACCOUNT` has never run; first test is the next tag.
     - Gemfury's error body is not printed on a failed upload (parked).
     - Whether Gemfury allows deleting a published version is unverified.
-    - Rotation of the token pasted in chat on 2026-09-29: not confirmed.
     - The unpinned ruff in CI versus pre-commit's pin v0.15.17 (parked).
     - A boxed `new String(...)` returns `null`; no test covers it.
     - `make quality-no-node` stays parked; `/usr/local/bin/node` on host.
@@ -58,18 +52,19 @@
     - arm64 is unverified.
     - The first secret-scanning history scan hasn't been re-checked.
 
-- **Dead ends:** two push tokens as the read token: 401 on `npm.fury.io`
-  despite 200 on `api.fury.io` (task file).
+- **Dead ends:** `make demo` on 5173: "port is already allocated"
+  (another project's container); moved to 5180.
 
 - **Known red:** none.
 
 - **Checkpoint:** `make quality` exit 0:
-  - Biome check "Checked 19 files … No fixes applied." and ruff "All
+  - Biome check "Checked 21 files … No fixes applied." and ruff "All
     checks passed!";
-  - Biome format "Checked 19 files … No fixes applied.";
+  - ruff format "4 files already formatted", Biome format "Checked 21
+    files … No fixes applied.";
   - `tools/checks` "Ran 17 tests … OK";
   - vitest: 4 files passed, 59 tests passed;
   - pack-smoke: npm pack reports 11 files, then "pack-smoke: import, call
     and consumer typecheck passed";
   - gitleaks (tree) and gitleaks (history) Passed.
-  - Outside the gate: `make consumer-check` exit 0 (needs `.env`).
+  - Outside the gate: `make demo` acceptance curls (task file "Done").
