@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>email-suggest demo</title>
+    <style>
+    body {
+      font:
+        16px / 1.5 system-ui,
+        sans-serif;
+      max-width: 32rem;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem;
+      font: inherit;
+    }
+    #hint {
+      min-height: 1.5em;
+      margin-top: 0.5rem;
+    }
+    #hint button {
+      font: inherit;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: #0b57d0;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>email-suggest</h1>
+    <p>
+      Type an address with a typo, e.g. <code>mario@lgmai.com</code> or
+      <code>info@studio-rossi.con</code>.
+    </p>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="off">
+    <p id="hint" aria-live="polite"></p>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

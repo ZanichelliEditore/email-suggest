@@ -54,7 +54,7 @@ repos:
         language: system
         pass_filenames: false
         # .editorconfig sets Biome's indent (biome.json useEditorconfig).
-        files: ^(src/|test/|pack-smoke/|consumer-check/|[^/]+\.json$|\.editorconfig$)
+        files: ^(src/|test/|pack-smoke/|consumer-check/|examples/|[^/]+\.json$|\.editorconfig$)
         stages: [pre-commit]
   - repo: local
     hooks:

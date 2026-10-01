@@ -67,6 +67,17 @@ consumer-check: deps ## install 0.1.0 from Gemfury into a scratch Vite project, 
 	  /app/node_modules/.bin/vite build; \
 	  node check.js'
 
+# T-015: the README's Usage snippet in a page, over the built dist/. Vite is the
+# one vitest pins in the lockfile (no new dependency, as in consumer-check). It
+# listens on every interface inside the container; the host publishes it on
+# loopback only. Not Vite's default 5173, which other projects' dev servers
+# often hold; another port: make demo DEMO_PORT=<n>. Ctrl-C stops it.
+.PHONY: demo
+DEMO_PORT ?= 5180
+demo: build ## serve examples/demo/ at http://127.0.0.1:5180/ (Vite dev server; DEMO_PORT=<n> for another port; Ctrl-C stops)
+	docker compose run --rm -p 127.0.0.1:$(DEMO_PORT):$(DEMO_PORT) dev \
+	  node_modules/.bin/vite examples/demo --host 0.0.0.0 --port $(DEMO_PORT) --strictPort
+
 rfc-sync: ## move RFCs into the folder matching their Status
 	python3 tools/checks/sync_rfc_status.py
 

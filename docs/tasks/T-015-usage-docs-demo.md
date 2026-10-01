@@ -18,8 +18,12 @@ has a Usage section, and `make demo` serves a page that shows the hint live.
   mean …?" hint that applies the suggestion on click. It imports the built
   `dist/index.js`, so it shows what ships.
 - `make demo`: build, then Vite's dev server in the container, published on
-  `127.0.0.1:5173` only. Vite is the lockfile's (via vitest): no new
-  dependency. `examples/**` joins Biome's includes.
+  `127.0.0.1:5180` only (`DEMO_PORT` overrides). Vite is the lockfile's
+  (via vitest): no new dependency. `examples/**` joins Biome's includes and
+  the pre-commit hook's pattern.
+  - *Changed (2026-10-01):* 5180, not 5173: another project's container
+    holds 5173 on this host, and the first `make demo` failed with "port is
+    already allocated". Acceptance follows.
 
 ## Out of scope
 - A UI component in the package (SPEC §2 non-goal): the demo is not in
@@ -32,12 +36,13 @@ has a Usage section, and `make demo` serves a page that shows the hint live.
 
 ## Files expected to change
 - `README.md`, `examples/demo/index.html`, `examples/demo/main.js`,
-  `Makefile`, `biome.json`, `docs/tasks/PLAN.md`
+  `Makefile`, `biome.json`, `.pre-commit-config.yaml`, `docs/tasks/PLAN.md`
 
 ## Acceptance
 README has `## Usage` with SPEC §3's snippet; `make demo` serves
-`http://127.0.0.1:5173/`, and `curl` of it returns the page and of
-`/main.js` the module; `make quality` green.
+`http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js`
+the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with
+`export function suggest`; `make quality` green.
 
 ---
 *Filled at `/handoff`:*

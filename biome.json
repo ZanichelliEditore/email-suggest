@@ -8,6 +8,7 @@
       "test/**",
       "pack-smoke/**",
       "consumer-check/**",
+      "examples/**",
       "*.json",
       "!.*.json",
       "!package-lock.json"

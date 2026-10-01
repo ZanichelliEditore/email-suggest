@@ -28,8 +28,9 @@ Releases are published only by CI, from a `v*.*.*` tag
 
 ## Usage
 
-`suggest` is the only export. Pass it what the user typed; show the hint if
-it returns something:
+`suggest` is the only runtime export; `Suggestion`, its return type, is the
+only type export. Pass it what the user typed; show the hint if it returns
+something:
 
 ```ts
 import { suggest } from "@zanichelli/email-suggest";
@@ -49,7 +50,7 @@ suggest("info@studio-rossi.con");
 ```
 
 - `address` is the full corrected address, with the local part exactly as
-  typed; `domain` is the corrected domain alone, lowercase.
+  typed (after trimming surrounding whitespace); `domain` is the corrected domain alone, lowercase.
 - `null` means no hint: the domain is already known (`mario@gmail.com`), no
   known domain is close enough (`mario@unknown-company.it`), there is no `@`
   or one side of it is empty (`mario`, `mario@`), or the argument is not a
@@ -58,6 +59,9 @@ suggest("info@studio-rossi.con");
   so it is safe under server-side rendering.
 - It only suggests: it does not validate syntax and never blocks a submit
   (SPEC §2). Let the user keep what they typed.
+
+`make demo` serves a page with the hint live, from `examples/demo/`, at
+<http://127.0.0.1:5180/> (`make demo DEMO_PORT=<n>` for another port).
 
 ## Getting started
 
