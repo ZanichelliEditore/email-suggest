@@ -4,58 +4,56 @@
 (commits, `path::test`, run URLs); don't narrate. An empty section says
 "none".*
 
-- **Written:** `2026-10-01T15:27:50+02:00`
-- **Describes commit:** `ceff92f`, pushed to `origin/main`. **CI:**
-  green on `quality.yml`, run
-  https://github.com/ZanichelliEditore/email-suggest/actions/runs/36868959496
-  (jobs `quality` and `checks` both success; observed with `gh run view`).
+- **Written:** `2026-10-06T15:15:41+02:00`
+- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`.
 
-- **Current task:** T-015 (`docs/tasks/T-015-usage-docs-demo.md`),
-  `done (2026-10-01)`. Owner request outside SPEC §13: README `## Usage`
-  (`abbe4f5`), `examples/demo/` + `make demo` on `127.0.0.1:5180`
-  (`0940097`). Acceptance shown with `curl` (task file "Done").
+- **Current task:** RFC `docs/rfc/active/2026-10-06-publish-to-npm.md`
+  (owner request at `/resume`; no PLAN row of its own, it precedes T-016),
+  `done (2026-10-06)`: written, one `rfc-reviewer` round, accepted by the
+  owner with the `v0.1.0` tag move (`a287128`).
 
-- **Next action:** `/resume`. PLAN has no `todo` row: ask the owner for
-  the next request, a `/plan`, or triage of `docs/improvements.md`.
+- **Next action:** `/resume`, then T-016 (`docs/tasks/T-016-npm-publish.md`,
+  `todo (2026-10-06)`). Before its step 3.1, ask the owner to create the
+  npm granular token and the `NPM_TOKEN` repo secret (RFC Decision 3.1:
+  `@zanichelli` scope only, ≤ 7 days, 2FA bypass if the org requires it).
 
 - **Read before anything else:**
-  - `make demo` is interactive (no `-T`); Ctrl-C stops it. Port 5180, not
-    Vite's 5173 (held by another project's container on this host);
-    `DEMO_PORT=<n>` overrides (`Makefile` `demo:`).
-  - `make format` doesn't fix `<style>` formatting that `make
-    format-check` rejects; use `biome format --write <file>` in the
-    container (`docs/improvements.md`, 2026-10-01).
+  - RFC Decisions 1–6: T-016 does 1, 2, 4, 5, 6 and 3.1–3.2; T-017 does
+    3.3–3.4 and the first `consumer-check` against npm.
+  - Old `v0.1.0` commit: `7f3dc30`; goes into the journal before the move.
+    `git diff v0.1.0 HEAD -- src/ tsconfig*.json package.json
+    package-lock.json` was empty on 2026-10-06.
+  - The owner already accepted the tag move (2026-10-06); still confirm
+    the go at the moment of the push.
 
-- **Reviews:** `/review` (code-reviewer) on `abbe4f5` + the staged demo
-  diff: 0 blockers. Fixed: acceptance now curls the `/@fs` dist import,
-  overview entry, README "only runtime export" and trimming, improvements
-  citation. Dismissed with evidence: "Ctrl-C won't stop it" (measured: it
-  does, journal 2026-10-01). No second round: fixes were docs only.
+- **Reviews:** `rfc-reviewer` full round on the RFC: 2 high, 2 medium,
+  2 low, all resolved (RFC "Review and acceptance"); no mechanism change,
+  so no scoped round. `code-reviewer` not run on `a287128`: the diff is the
+  reviewed RFC plus PLAN rows and a task file, no code; dismissed for that
+  reason.
 
-- **Proposed plan changes:** none.
+- **Proposed plan changes:** T-017 (switch to OIDC and close) and T-018
+  (Dependabot PR #2: biome 2.5.15, vitest 5.0.3) are `proposed
+  (2026-10-06)`; the owner confirms them.
 
 - **Open doubts:**
-  - New: the demo was checked with `curl`, not in a browser (Playwright
-    MCP did not connect); the hint's click handler is unobserved.
-  - Carried from T-013's handoff, unchanged:
-    - Token rotation: the first `.env` token, the unused push token
-      created 2026-09-29 19:23, and the token pasted in chat 2026-09-29:
-      none confirmed.
-    - `make consumer-check` and `make demo` rely on vitest's Vite hoisted
-      to `node_modules/.bin/vite`.
-    - `vars.GEMFURY_ACCOUNT` has never run; first test is the next tag.
-    - Gemfury's error body is not printed on a failed upload (parked).
-    - Whether Gemfury allows deleting a published version is unverified.
-    - The unpinned ruff in CI versus pre-commit's pin v0.15.17 (parked).
-    - A boxed `new String(...)` returns `null`; no test covers it.
-    - `make quality-no-node` stays parked; `/usr/local/bin/node` on host.
-    - Dependabot `docker`/`npm` grouping is reasoned, not observed.
-    - The repo is public, although the owner said "internal use".
-    - arm64 is unverified.
-    - The first secret-scanning history scan hasn't been re-checked.
+  - Unverified: that npm prefers OIDC over `NODE_AUTH_TOKEN` when both
+    exist; harmless for the bootstrap (no trusted publisher yet).
+  - Unverified: whether the npm org `zanichelli` requires 2FA for writes
+    (decides the token's bypass setting).
+  - Whether Gemfury allows deleting `0.1.0`, and whether the Gemfury
+    account serves other Zanichelli packages: owner's call (RFC Decision 4).
+  - Gemfury token rotation (from T-013): to be closed by revocation in
+    T-016/T-017.
+  - Carried, unchanged: `make consumer-check`/`make demo` rely on vitest's
+    hoisted Vite; a boxed `new String(...)` returns `null` untested;
+    `make quality-no-node` parked; unpinned ruff in CI vs pre-commit
+    v0.15.17 (parked); Dependabot grouping reasoned, not observed; arm64
+    unverified; first secret-scanning history scan not re-checked; the demo's
+    click handler unobserved in a browser.
+  - Settled 2026-10-06: "repo public vs internal use" (owner: public).
 
-- **Dead ends:** `make demo` on 5173: "port is already allocated"
-  (another project's container); moved to 5180.
+- **Dead ends:** none.
 
 - **Known red:** none.
 
@@ -69,4 +67,3 @@
   - pack-smoke: npm pack reports 11 files, then "pack-smoke: import, call
     and consumer typecheck passed";
   - gitleaks (tree) and gitleaks (history) Passed.
-  - Outside the gate: `make demo` acceptance curls (task file "Done").

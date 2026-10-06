@@ -170,3 +170,14 @@ stands for. End an entry with the task id it came from.
   Its default deny list still returns 403 for `/@fs/app/.env`. (T-015)
 - `npm pack` always ships `README.md`: the Usage section grew the tarball
   from 9.1 kB to 10.4 kB unpacked, with the same 11 files. (T-015)
+
+## 2026-10-06
+
+- npm trusted publishing (OIDC) can't do a package's first publish: a
+  trusted publisher can only be added to a package already on the registry
+  (`npm trust` docs). A new package needs one token-based publish first.
+  Provenance is automatic only for a public repo and package, from
+  GitHub-hosted runners; it needs npm ≥ 11.5.1 (dev image: 11.19.0).
+  (RFC 2026-10-06-publish-to-npm, before T-016)
+- `make rfc-sync` exits 1 when it moves an RFC: by design, so the move is
+  reviewed and `git add`ed, not a failure. (RFC 2026-10-06-publish-to-npm)
