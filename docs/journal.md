@@ -206,3 +206,10 @@ stands for. End an entry with the task id it came from.
   with a dot, the search root too: `.pack/*.tgz` needs
   `include-hidden-files: true` (`@actions/glob` `internal-globber.ts`).
   (T-019)
+- RFC 2026-10-06-publish-to-npm step 3.3 done by the owner on 2026-10-06:
+  trusted publisher (GitHub Actions, `ZanichelliEditore/email-suggest`,
+  `publish.yml`, no environment), "disallow tokens", both T-016 npm tokens
+  revoked (owner's word; npm settings not observable from here), and the
+  `NPM_TOKEN` secret deleted (observed with `gh secret list`). From here on
+  a failed OIDC exchange falls back to setup-node's placeholder token and
+  is rejected: fail closed. (T-017)

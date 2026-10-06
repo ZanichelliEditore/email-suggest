@@ -217,11 +217,11 @@ Docker is the only local path; Node is not needed on the host.
      and version against the tag, from the runner with
      `actions/setup-node`'s Node 24, so every version carries a provenance
      attestation.
-- The publish credential is npm trusted publishing (OIDC): no stored token.
-  The first publish of `0.1.0` cannot use it, because a trusted publisher
-  needs an existing package; it uses a short-lived granular token, the repo
-  secret `NPM_TOKEN`, removed once the trusted publisher is set (RFC
-  Decision 3).
+- The publish credential is npm trusted publishing (OIDC): no stored token,
+  and the package disallows tokens. Only the first publish, of `0.1.0`,
+  used one (a short-lived granular token, since revoked), because a trusted
+  publisher needs an existing package (RFC Decision 3); OIDC alone
+  publishes from `0.1.1` on (T-017).
 - The README documents `npm install @zanichelli/email-suggest`; consumers
   need no token and no `.npmrc`.
 
@@ -282,8 +282,8 @@ published `exports` map and types work, not just the source.
   capability to route through a core.
 - The library handles email addresses only in memory and never stores or
   sends them.
-- Personal data: the bootstrap npm token (§9) stays out of git, in a repo
-  secret only.
+- Personal data: no publish credential is stored anywhere (§9: OIDC since
+  T-017); the revoked `0.1.0` bootstrap token lived only in a repo secret.
 
 ## 12. Change process
 
@@ -320,8 +320,9 @@ domain: "gmail.com" }`.
 `docs/rfc/active/2026-10-06-publish-to-npm.md` moves publishing to the
 public npm registry and retires Gemfury. The acceptance above was
 demonstrated against Gemfury (T-013, T-014) and stands as history;
-`make consumer-check` now installs `0.1.0` from npm and also requires
-`npm audit signatures` to report a verified provenance attestation.
+`make consumer-check` now installs the latest release from npm (`0.1.1`
+since T-017) and also requires `npm audit signatures` to report a
+verified provenance attestation.
 
 ## 14. Session discipline
 

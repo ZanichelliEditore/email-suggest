@@ -11,7 +11,7 @@ concurrency:
 
 # Nothing by default; each job names its own (RFC 2026-10-06-publish-to-npm,
 # Decision 7): only `publish`, which runs no repo code, can request an OIDC
-# token or read the npm credential.
+# token, the only npm credential (T-017).
 permissions: {}
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
     needs: gate
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # npm provenance now, trusted publishing (OIDC) from T-017
+      id-token: write # trusted publishing (OIDC) and npm provenance
     # No checkout: this job runs no repo code and reads no repo .npmrc.
     steps:
       # Fails on a digest mismatch (download-artifact v8 default), so this is
@@ -64,16 +64,11 @@ jobs:
         with:
           node-version: "24" # the Dockerfile's major
           registry-url: https://registry.npmjs.org
+      # OIDC alone authenticates: no token exists (RFC Decision 3.4, T-017).
       - name: publish to npm
-        env:
-          # Bootstrap only (RFC Decision 3.1): T-017 removes this line and the
-          # NODE_AUTH_TOKEN check below once the trusted publisher exists, and
-          # OIDC alone publishes.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         # The name/version check catches an honest mismatch (wrong tag, stale
         # tarball), not a crafted tarball (RFC Decision 7).
         run: |
-          : "${NODE_AUTH_TOKEN:?repo secret NPM_TOKEN is not set}"
           set -- ./tarball/*.tgz # "./": npm reads "dir/x.tgz" as a GitHub repo
           [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball, got: $*" >&2; exit 1; }
           want="@zanichelli/email-suggest@${GITHUB_REF_NAME#v}"
