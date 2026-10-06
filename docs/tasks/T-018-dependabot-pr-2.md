@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Depends on:** none
 - **Created:** 2026-10-06
 
@@ -36,6 +36,21 @@ merged.
 *Filled at `/handoff`:*
 
 ## Done
+- `64721b4`: T-018 taken as `doing`, this file.
+- PR #2 CI green on head `73a8c4f`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37481896052
+  (`quality`, `checks`).
+- On `73a8c4f` (detached): `make deps` then `make quality` exit 0; Biome
+  2.5.15 (`biome --version` in the container), vitest v5.0.3, 4 files /
+  59 tests passed, pack-smoke and gitleaks passed.
+- Merged as `9e94d03` (merge commit, `--match-head-commit 73a8c4f`).
+- On merged `main`: `make deps` then `make quality` exit 0; CI on
+  `9e94d03` green, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37486395146.
+- `code-reviewer` on `39e5895..9e94d03`: no blocker, 3 nits; lockfile
+  downgrade of `why-is-node-running` recorded in `docs/journal.md`
+  (2026-10-06); dev-stack RFC version table dismissed (dated record,
+  Decision 4 expects patch bumps); post-merge checks recorded here.
 
 ## Dead ends
 none
@@ -44,5 +59,7 @@ none
 none
 
 ## Context pressure
+low
 
 ## Next action
+none (done).

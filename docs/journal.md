@@ -228,3 +228,8 @@ stands for. End an entry with the task id it came from.
   `curl` of `registry.npmjs.org/<pkg>?t=<now>` showed `0.1.1` at 17:00:54,
   `npm view --prefer-online` at 17:01:38 (published 16:59:50 local). Wait
   before calling a publish broken. (T-017)
+- Dependabot PR #2 (`npm` group) lowered `why-is-node-running` from
+  3.2.2 to 3.2.1 in `package-lock.json`: vitest 5.0.3 pins it exactly
+  (`"3.2.1"`, was `"^3.2.1"`). Upstream and harmless; a lockfile
+  downgrade under a bump is not by itself a mistake. The grouped config
+  (one PR for both npm updates) is now observed, not just reasoned. (T-018)
