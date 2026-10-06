@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T17:02:55+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<ci>`
+- **Describes commit:** `5d0667d`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37484134727
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-017 (`docs/tasks/T-017-oidc-release-0.1.1.md`),
   `done (2026-10-06)`. Work commit `90c763e` (OIDC-only `publish.yml`,
