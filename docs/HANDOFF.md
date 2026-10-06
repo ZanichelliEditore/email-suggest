@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T15:15:41+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`.
+- **Describes commit:** `4baa9d7`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37469465512
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** RFC `docs/rfc/active/2026-10-06-publish-to-npm.md`
   (owner request at `/resume`; no PLAN row of its own, it precedes T-016),
