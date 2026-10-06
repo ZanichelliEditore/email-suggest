@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T17:46:01+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`.
+- **Describes commit:** `d81cba9`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37490309815
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-020 (`docs/tasks/T-020-legacy-resolution-fields.md`),
   `done (2026-10-06)`. Code in `3e74367`; tag `v0.1.2` published,
