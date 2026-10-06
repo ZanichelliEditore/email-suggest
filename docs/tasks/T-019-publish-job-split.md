@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Depends on:** T-016
 - **Created:** 2026-10-06
 
@@ -50,18 +50,43 @@ RFC amended and accepted by the owner; in `publish.yml`, `gate` holds only
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `6e9b0f0`: RFC `2026-10-06-publish-to-npm` amendment (Decision 7),
+  accepted by the owner with option A on 2026-10-06; `publish.yml` split
+  into `gate` (`contents: read`, uploads `.pack/*.tgz` with
+  `include-hidden-files`) and `publish` (`id-token: write` only, no
+  checkout, name/version guard, `npm publish ./tarball/*.tgz
+  --ignore-scripts`); SPEC §9, `docs/architecture/overview.md`; two parked
+  entries closed in `docs/improvements.md`; journal.
+- Evidence: pre-commit `actionlint` passed on the new workflow;
+  `quality.yml` green on `6e9b0f0`
+  (https://github.com/ZanichelliEditore/email-suggest/actions/runs/37477021298),
+  no workflow-file error run for `publish.yml`; guard lines taken from the
+  workflow pass for `v0.1.0` and exit 1 for `v0.1.1`, two tarballs, none;
+  `npm publish ./tarball/<tgz> --dry-run` in the dev container read the
+  local tarball (shasum `7523b2cf…`) and stopped at "cannot publish over
+  ... 0.1.0".
+- Reviews: `rfc-reviewer` full (2 high, 3 low, fixed) and scoped (1
+  fail-open → owner chose A; 1 parked); `code-reviewer` full (1 high fixed:
+  `tarball/x.tgz` parsed as GitHub shorthand, confirmed with
+  `npm-package-arg`; 2 low: 1 fixed, 1 needs no change);
+  `/security-review`: no finding at or above confidence 8.
 
 ## Dead ends
-none
+- `npm publish tarball/x.tgz` (no leading `./`): npm reads it as the
+  GitHub repo `tarball/x.tgz`. Caught in review, before any run.
 
 ## Open doubts
-none
+- The two-job workflow has never run on GitHub; its first run is the next
+  release tag. Both jobs fail closed (red gate skips `publish`; a failed
+  download or guard stops before `npm publish`).
+- The guard catches honest mismatches only, not a crafted tarball (owner
+  decision A, RFC Decision 7).
+- T-017's PLAN acceptance asks for "publish run for `v0.1.0` green", which
+  cannot happen again: `0.1.0` is on npm and any re-run fails with "cannot
+  publish over". Needs re-planning before T-017 is taken.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done)
