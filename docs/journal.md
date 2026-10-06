@@ -181,3 +181,13 @@ stands for. End an entry with the task id it came from.
   (RFC 2026-10-06-publish-to-npm, before T-016)
 - `make rfc-sync` exits 1 when it moves an RFC: by design, so the move is
   reviewed and `git add`ed, not a failure. (RFC 2026-10-06-publish-to-npm)
+- Before the `v0.1.0` move (RFC 2026-10-06-publish-to-npm, Decision 3.2):
+  the old tag is the annotated object `abdb05d` on commit `7f3dc30`.
+  `git diff v0.1.0 -- src/ tsconfig*.json package.json package-lock.json`
+  against the T-016 tree shows only `package.json`'s new `license` and
+  `repository`, plus one line beyond them: `"license": "MIT"` in
+  `package-lock.json`'s root entry, which `npm install --package-lock-only`
+  copies from `package.json`. No `src/` or toolchain change. (T-016)
+- The npm org `zanichelli` does not require 2FA for token writes, so the
+  bootstrap token has no 2FA bypass (owner, 2026-10-06). If that is wrong,
+  the publish run fails with `EOTP` before uploading. (T-016)

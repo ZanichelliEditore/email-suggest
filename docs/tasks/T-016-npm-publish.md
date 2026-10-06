@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** todo (2026-10-06)
+- **Status:** doing (2026-10-06)
 - **Depends on:** T-015
 - **Created:** 2026-10-06
 

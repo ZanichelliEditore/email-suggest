@@ -11,6 +11,7 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write # npm provenance now, trusted publishing (OIDC) from T-017
 
 jobs:
   publish:
@@ -29,27 +30,23 @@ jobs:
       - run: pipx install ruff
       - run: pipx install pre-commit
       - run: make quality
-      # 4. Upload that tarball to Gemfury's push endpoint. The dev image has no
-      # curl, so this runs on the runner. The token goes to curl on stdin as
-      # the URL's user, never in argv or a file. The account is a repo
-      # variable, not a secret: a masked account also masks the package scope
-      # in every log line (SPEC §9).
-      - name: upload to Gemfury
+      # 4. Publish that tarball to the public npm registry (RFC
+      # 2026-10-06-publish-to-npm, Decision 1). npm runs on the runner, not
+      # in the dev container, because it needs the runner's OIDC variables;
+      # setup-node's Node only sends a finished tarball. The gate and the
+      # tarball still use the Dockerfile's Node (SPEC §8).
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24" # the Dockerfile's major
+          registry-url: https://registry.npmjs.org
+      - name: publish to npm
         env:
-          GEMFURY_PUSH_URL: https://push.fury.io/${{ vars.GEMFURY_ACCOUNT }}/
-          GEMFURY_ACCOUNT: ${{ vars.GEMFURY_ACCOUNT }}
-          GEMFURY_PUSH_TOKEN: ${{ secrets.GEMFURY_PUSH_TOKEN }}
+          # Bootstrap only (RFC Decision 3.1): T-017 removes this line and the
+          # guard below once the trusted publisher exists, and OIDC alone
+          # publishes.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          : "${GEMFURY_ACCOUNT:?repo variable GEMFURY_ACCOUNT is not set}"
-          : "${GEMFURY_PUSH_TOKEN:?repo secret GEMFURY_PUSH_TOKEN is not set}"
+          : "${NODE_AUTH_TOKEN:?repo secret NPM_TOKEN is not set}"
           set -- .pack/*.tgz
           [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball in .pack/, got: $*" >&2; exit 1; }
-          # --fail-with-body catches 4xx/5xx; a 3xx would exit 0 with nothing
-          # uploaded, so the status must be 2xx.
-          response=$(printf 'user = "%s:"\n' "$GEMFURY_PUSH_TOKEN" |
-            curl --config - --silent --show-error --fail-with-body \
-              --write-out '\n%{http_code}' \
-              --form "package=@$1" "$GEMFURY_PUSH_URL")
-          status=${response##*$'\n'}
-          printf '%s\n' "${response%$'\n'*}"
-          case "$status" in 2??) ;; *) echo "upload got HTTP $status" >&2; exit 1 ;; esac
+          npm publish "$1" --access public --provenance

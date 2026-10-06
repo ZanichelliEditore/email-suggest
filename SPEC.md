@@ -200,26 +200,26 @@ Docker is the only local path; Node is not needed on the host.
 
 ## 9. Publishing
 
-- Registry: Zanichelli's Gemfury npm registry.
+- Registry: the public npm registry (`registry.npmjs.org`), under the npm
+  organization `zanichelli`, which owns the `@zanichelli` scope (RFC
+  `docs/rfc/active/2026-10-06-publish-to-npm.md`, 2026-10-06).
 - Only CI publishes, never a laptop. Pushing a tag matching `v*.*.*` runs
   the publish job:
   1. fail unless the tag without its leading `v` equals `package.json`
      `version`;
   2. `make quality`;
   3. build;
-  4. upload to Gemfury the tarball `make quality`'s pack smoke test
-     checked, with `curl` to the push endpoint
-     `https://push.fury.io/<account>/`. Gemfury documents that endpoint
-     for push tokens and does not document `npm publish` with one (owner
-     decision, 2026-09-29, T-011).
-- The push token is the repo secret `GEMFURY_PUSH_TOKEN`. The account name
-  is the repo variable `GEMFURY_ACCOUNT`. It is not a secret: it is the
-  organization's account, the same string as the public package scope,
-  and as a secret it turned every log mention of the scope into `***`
-  (owner decision, 2026-09-29, T-014, reversing T-011's). Only the token
-  is confidential.
-- The README documents the consumer's `.npmrc` scope line using the
-  `<account>` placeholder, and where to get a read token.
+  4. `npm publish --access public --provenance` of the tarball
+     `make quality`'s pack smoke test checked, from the runner with
+     `actions/setup-node`'s Node 24, so every version carries a provenance
+     attestation.
+- The publish credential is npm trusted publishing (OIDC): no stored token.
+  The first publish of `0.1.0` cannot use it, because a trusted publisher
+  needs an existing package; it uses a short-lived granular token, the repo
+  secret `NPM_TOKEN`, removed once the trusted publisher is set (RFC
+  Decision 3).
+- The README documents `npm install @zanichelli/email-suggest`; consumers
+  need no token and no `.npmrc`.
 
 ## 10. Testing
 
@@ -278,8 +278,8 @@ published `exports` map and types work, not just the source.
   capability to route through a core.
 - The library handles email addresses only in memory and never stores or
   sends them.
-- Personal data: the Gemfury tokens stay out of git; the account name is
-  not secret (§9).
+- Personal data: the bootstrap npm token (§9) stays out of git, in a repo
+  secret only.
 
 ## 12. Change process
 
@@ -311,6 +311,13 @@ container, `0.1.0` installs from Gemfury into a scratch Vite project,
 `vite build` succeeds, and a script in that project checks that
 `suggest("mario@lgmai.com")` deep-equals `{ address: "mario@gmail.com",
 domain: "gmail.com" }`.
+
+*Amendment (2026-10-06):* RFC
+`docs/rfc/active/2026-10-06-publish-to-npm.md` moves publishing to the
+public npm registry and retires Gemfury. The acceptance above was
+demonstrated against Gemfury (T-013, T-014) and stands as history;
+`make consumer-check` now installs `0.1.0` from npm and also requires
+`npm audit signatures` to report a verified provenance attestation.
 
 ## 14. Session discipline
 
