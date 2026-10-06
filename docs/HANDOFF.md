@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T15:52:09+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`
+- **Describes commit:** `a76b480`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37474330066
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-016 (`docs/tasks/T-016-npm-publish.md`),
   `done (2026-10-06)`. `@zanichelli/email-suggest@0.1.0` is on npm with
