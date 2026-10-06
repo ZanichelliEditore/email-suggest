@@ -188,6 +188,12 @@ stands for. End an entry with the task id it came from.
   `repository`, plus one line beyond them: `"license": "MIT"` in
   `package-lock.json`'s root entry, which `npm install --package-lock-only`
   copies from `package.json`. No `src/` or toolchain change. (T-016)
-- The npm org `zanichelli` does not require 2FA for token writes, so the
-  bootstrap token has no 2FA bypass (owner, 2026-10-06). If that is wrong,
-  the publish run fails with `EOTP` before uploading. (T-016)
+- npm requires 2FA for publishing `@zanichelli`: a granular token without
+  "bypass 2FA" got `E403 ... granular access token with bypass 2fa enabled
+  is required` on the `PUT`, not `EOTP`, and published nothing (run
+  37472987047, attempt 1). Provenance had already been signed and logged to
+  Sigstore before the refusal. A bypass token in `NPM_TOKEN` and a re-run of
+  the same run published `0.1.0` (attempt 2): no tag move needed, a re-run
+  reads the current secret. npm warned that 2FA-bypass tokens "are being
+  restricted for ... direct publishing" (gh.io/npm-gat-bypass2fa-deprecation):
+  one more reason for T-017's OIDC switch. (T-016)

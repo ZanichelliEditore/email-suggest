@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Depends on:** T-015
 - **Created:** 2026-10-06
 
@@ -61,18 +61,53 @@ the commit to tag; `v0.1.0` moved to it and pushed after the owner's go
 *Filled at `/handoff`:*
 
 ## Done
-Commits and tests, not narration.
+- `beafb90`: RFC Decisions 1, 2, 4 (code), 5, 6 and the journal part of
+  3.2. `publish.yml` publishes `.pack/*.tgz` with `npm publish --access
+  public --provenance` (setup-node@v7, `id-token: write`, bootstrap
+  `NODE_AUTH_TOKEN` with a missing-secret guard); `package.json` gains
+  `license` and `repository`; `consumer-check/.npmrc` deleted; Gemfury gone
+  from README, SPEC §9/§11 (§13 amendment dated 2026-10-06), overview,
+  Makefile, `consumer-check/*.js`. `git grep -ni fury -- ':!docs'
+  ':!SPEC.md'` empty.
+- `make consumer-check` now requires `npm audit signatures` to report a
+  verified attestation: checked by hand in the dev container, semver@7.8.5
+  passes, semver@5.7.1 (no provenance) fails with "has no verified
+  provenance attestation". Against npm before the publish it failed closed
+  with a 404 (expected). First real run: T-017.
+- CI green on `beafb90`: run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37472697582.
+- `v0.1.0` moved from `7f3dc30` (tag object `abdb05d`) to `beafb90` (tag
+  object `1eb4679`) on the owner's go. Publish run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37472987047:
+  attempt 1 `E403` (token without 2FA bypass, nothing published), attempt 2
+  green after the owner replaced `NPM_TOKEN`. Registry: `0.1.0` `latest`,
+  `MIT`, repository URL, `dist.attestations` present, shasum `7523b2c…`
+  equal to the run's packed tarball.
+- Reviews: `code-reviewer` 0 high, 2 medium, 4 low. Fixed: attestation
+  check, token guard, anchored lockfile grep. Closed by check: setup-node
+  `v7` ref exists. Parked in `docs/improvements.md`: job-wide `id-token`
+  (split the job before T-017), SPEC §8/§14 nits. `/security-review`: no
+  finding at or above the bar.
 
 ## Dead ends
-none
+- Bootstrap token without "bypass 2FA" (owner said the org did not require
+  it): `E403` at the `PUT`. Fixed by a new token with the bypass, then
+  `gh run rerun`.
 
 ## Open doubts
-none
+- npm warned that 2FA-bypass tokens "are being restricted for ... direct
+  publishing" (gh.io/npm-gat-bypass2fa-deprecation). It worked on
+  2026-10-06; nothing after T-017 should depend on such a token.
+- `id-token: write` covers the gate's unpinned `pipx` installs and
+  pre-commit hooks; the security review adds that the dev container can
+  write the project `.npmrc` that `npm publish` then reads. Both close with
+  the parked two-job split, which should land before T-017 drops the token
+  (owner decision or RFC amendment).
+- The owner's revocations: first npm token (no bypass), Gemfury tokens,
+  `GEMFURY_*` repo secret/variable, `.env` Gemfury entries. Not observed.
 
 ## Context pressure
-low | ok | tight | overflowed — and, if tight or overflowed, how it should
-have been split.
+ok
 
 ## Next action
-Only if the status is still `doing`: the exact first step for the next
-session.
+none (done)
