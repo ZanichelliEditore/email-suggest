@@ -5,8 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T17:24:33+02:00`
-- **Describes commit:** `<hash>` (filled by the stamp commit). **CI:**
-  `<run>` (filled by the stamp commit).
+- **Describes commit:** `43f4a28`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37487295412
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-018 (`docs/tasks/T-018-dependabot-pr-2.md`),
   `done (2026-10-06)`. PR #2 merged as `9e94d03` (biome 2.5.15, vitest
