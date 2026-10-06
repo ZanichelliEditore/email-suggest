@@ -114,11 +114,15 @@ with `TS2307` on `@zanichelli/email-suggest`: its TypeScript resolves with
 `main` and `types`, release `0.1.2`), added as `proposed`. Order against
 T-018 is the owner's call at `/resume`.
 
+*Note (2026-10-06, T-018):* at `/resume` the owner chose T-018 over
+T-020; T-018 confirmed and taken as `doing`, its task file written the
+same day. T-020 stays `proposed`.
+
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
 | T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js` the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with `export function suggest`; `make quality` green | done (2026-10-01) |
 | T-016 | npm publishing: workflow, Gemfury removal, `0.1.0` bootstrap | build | T-015 | RFC `2026-10-06-publish-to-npm` Decisions 1, 2, 4, 5 (code), 6 and 3.1–3.2 done; `git grep -ni fury -- ':!docs' ':!SPEC.md'` empty, SPEC §9/§11 name no Gemfury and §13 has a dated amendment; `make quality` green; `v0.1.0` moved and pushed (ends at the wait for the publish run) | done (2026-10-06) |
 | T-017 | npm publishing: switch to OIDC, release `0.1.1`, close | build | T-016, T-019 | Owner's RFC step 3.3 done (trusted publisher added, tokens disallowed, both T-016 npm tokens revoked, `NPM_TOKEN` secret deleted); `NODE_AUTH_TOKEN` gone from `publish.yml`; `package.json` `version` is `0.1.1`; tag `v0.1.1` pushed after the owner's explicit go; publish run for `v0.1.1` green (both jobs) and `npm view @zanichelli/email-suggest@0.1.1` answers; `make consumer-check` exits 0 against `0.1.1` with `npm audit signatures` passing; `make quality` green | done (2026-10-06) |
-| T-018 | Merge Dependabot PR #2 (biome 2.5.15, vitest 5.0.3) | build | none | PR #2 CI green; `make deps` then `make quality` green on its branch; merged | proposed (2026-10-06) |
+| T-018 | Merge Dependabot PR #2 (biome 2.5.15, vitest 5.0.3) | build | none | PR #2 CI green; `make deps` then `make quality` green on its branch; merged | doing (2026-10-06) |
 | T-019 | Split `publish.yml` into a gate job and a publish job (before T-017) | build | T-016 | RFC `2026-10-06-publish-to-npm` amended (or owner decision recorded); gate job holds only `contents: read` and uploads `.pack/*.tgz` as an artifact; only the publish job holds `id-token: write` and the npm credential and runs no repo code; `make quality` green | done (2026-10-06) |
 | T-020 | Top-level `main` and `types` for `node10` consumers; release `0.1.2` | build | T-017 | `make pack-smoke` fails with `main` or `types` removed and passes with both; `npm view @zanichelli/email-suggest@0.1.2 main types` prints `./dist/index.js` and `./dist/index.d.ts`; tag `v0.1.2` pushed after the owner's explicit go; publish run for `v0.1.2` green (both jobs); `make consumer-check` exits 0 against `0.1.2`; `make quality` green | proposed (2026-10-06) |
