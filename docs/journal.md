@@ -197,3 +197,12 @@ stands for. End an entry with the task id it came from.
   reads the current secret. npm warned that 2FA-bypass tokens "are being
   restricted for ... direct publishing" (gh.io/npm-gat-bypass2fa-deprecation):
   one more reason for T-017's OIDC switch. (T-016)
+- `npm publish dir/x.tgz` is not a file: `npm-package-arg` reads a path
+  with one slash and no leading `.`, `/` or `~/` as GitHub shorthand
+  (`tarball/x.tgz` → type `git`, `github.com`); `./tarball/x.tgz` and
+  `.pack/x.tgz` are `file`. Always give npm a local tarball as `./...`.
+  Checked with npm 11.19.0's bundled parser and a `--dry-run`. (T-019)
+- `upload-artifact` (≥ v4.4) drops every glob item whose basename starts
+  with a dot, the search root too: `.pack/*.tgz` needs
+  `include-hidden-files: true` (`@actions/glob` `internal-globber.ts`).
+  (T-019)

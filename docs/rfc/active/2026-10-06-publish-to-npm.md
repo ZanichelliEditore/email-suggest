@@ -48,7 +48,8 @@ Constraints:
 ## Decision
 
 **1. `publish.yml` runs `npm publish` on the runner, with Node from
-`actions/setup-node`.** Steps 1–3 of SPEC §9 are unchanged: tag/version
+`actions/setup-node`.** (The amendment's Decision 7 splits its single
+job in two.) Steps 1–3 of SPEC §9 are unchanged: tag/version
 check, then `make quality` in Docker, whose `pack-smoke` leaves the tested
 tarball in `.pack/`. Step 4 changes: the `curl` upload becomes
 
@@ -195,6 +196,135 @@ bootstrap is done.
 - **Publish as `0.1.1` with a new tag.** No tag move, but the owner chose
   `0.1.0` (2026-10-06).
 
+## Amendment (2026-10-06): a gate job and a publish job
+
+*For T-019; accepted by the owner on 2026-10-06 (see below).*
+
+### Context
+
+Decision 1 gives the whole `publish` job `id-token: write`, so every step
+in it can request an OIDC token: the unpinned `pipx install ruff` and
+`pipx install pre-commit`, the pre-commit hooks, the devDependencies
+`make quality` runs (tsc, vitest, Biome) and the dev container, which can
+also write the project `.npmrc` that `npm publish` then reads. GitHub
+grants permissions per job, never per step. A trusted publisher binds a
+repository and a workflow file (plus an optional environment), not a job,
+so once T-017 makes OIDC the only credential, any step of any job in
+`publish.yml` that holds `id-token: write` can mint a token npm accepts
+for this package. The split was parked twice: T-013's security review and
+T-016's code review (`docs/improvements.md`).
+
+### Decision
+
+**7. Two jobs: `gate` tests and uploads the tarball; `publish` downloads
+and publishes it.** It amends Decision 1's job layout. Decision 1's Node
+is unchanged; its publish command gains `--ignore-scripts` and reads the
+tarball from `./tarball/`, and its single-tarball guard gains a
+name/version check.
+
+```yaml
+permissions: {} # nothing by default; each job names its own
+
+jobs:
+  gate:
+    permissions:
+      contents: read
+    steps:
+      # checkout, setup-python, tag/version check, pipx, make quality: as now
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tarball
+          path: .pack/*.tgz
+          include-hidden-files: true # .pack is a dot directory
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: gate
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: tarball
+          path: tarball
+      - uses: actions/setup-node@v7 # as in Decision 1
+      - name: publish to npm
+        # plus Decision 3.1's NODE_AUTH_TOKEN env and its check, until 3.4
+        run: |
+          set -- ./tarball/*.tgz # "./": npm reads "dir/x.tgz" as a GitHub repo
+          [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball, got: $*" >&2; exit 1; }
+          want="@zanichelli/email-suggest@${GITHUB_REF_NAME#v}"
+          got=$(tar -xzOf "$1" package/package.json | jq -r '.name + "@" + .version')
+          [ "$got" = "$want" ] || { echo "tarball is $got, tag wants $want" >&2; exit 1; }
+          npm publish "$1" --access public --provenance --ignore-scripts
+```
+
+- `upload-artifact` skips hidden files and directories unless
+  `include-hidden-files` is set, and its glob drops any path whose
+  basename starts with a dot, the search root `.pack` included
+  (`@actions/glob`, `internal-globber.ts`). Without the input the gate
+  fails with "no files found".
+- The tarball path starts with `./`. npm parses a `npm publish` argument
+  with `npm-package-arg`, which reads `tarball/x.tgz` as the GitHub
+  shorthand `tarball/x.tgz` (type `git`, `github.com`) and only
+  `./tarball/x.tgz` as a file (checked in the dev container, 2026-10-06).
+  Decision 1's `.pack/x.tgz` was a file only because of its leading dot.
+- `publish` has no `actions/checkout`: it runs no repo code and npm reads
+  no repo `.npmrc`, only the user config `setup-node` writes.
+  `--ignore-scripts` keeps lifecycle scripts in the tarball's
+  `package.json`, which `gate` wrote, from running next to the credential.
+- `publish` re-checks the tarball against the tag on its own: the
+  `package/package.json` inside it must name `@zanichelli/email-suggest`
+  at the tag's version. It catches an honest mismatch (a wrong tag, a
+  stale or foreign tarball), not a crafted one: npm reads the manifest
+  differently (it strips the first path component and keeps the last
+  `package.json`), and matching that in shell is not attempted. `tar` and
+  `jq` are on the runner image; neither runs repo code.
+- Only `publish` holds `id-token: write` and, until step 3.4,
+  `NODE_AUTH_TOKEN` from `secrets.NPM_TOKEN`. `gate` holds
+  `contents: read` only.
+- `download-artifact@v8` fails on a digest mismatch by default, so
+  `publish` sends the bytes `gate` uploaded. A same-run download needs no
+  `github-token` and no extra permission.
+- `retention-days: 1`: the artifact only carries the tarball from one job
+  to the next; a re-run within the day can still download it.
+- The workflow-level `concurrency` stays as it is.
+
+### Consequences
+
+- **Easier:** a compromised gate step (unpinned tool, hook,
+  devDependency, container) can no longer request an OIDC token or read
+  the npm credential, so it cannot publish on its own; it can only hand
+  `publish` a tarball.
+- **Not fixed:** `gate` still builds the tarball. Code that subverts the
+  gate can alter its contents, and a crafted tarball can pass the guard
+  under another version of the package, which `publish` then sends; the
+  provenance attestation names the workflow run, not the tarball's
+  correctness.
+- **Two new Actions:** `actions/upload-artifact` and
+  `actions/download-artifact`, first-party, kept fresh by Dependabot's
+  existing `github-actions` entry. The publish path now also depends on
+  GitHub's artifact storage.
+- **SPEC §9** names the two jobs; `docs/architecture/overview.md` too.
+- **Unproven until the next tag:** no local run reproduces a tag-triggered
+  workflow. A syntax error shows on push as a failed run for
+  `publish.yml`; the jobs first run at the next release tag. Both fail
+  closed: a red gate skips `publish`, and a failed download or guard stops
+  before `npm publish`. The guard's shell is tested locally against a
+  packed tarball (T-019), not on a runner.
+
+### Alternatives considered
+
+- **Keep one job and scope `id-token` to the publish step.** Not possible:
+  GitHub grants permissions per job.
+- **Rebuild or re-test in the publish job.** Brings repo code back next to
+  the credential. Rejected.
+- **A GitHub environment with required reviewers on `publish`, bound in the
+  trusted publisher.** Stronger (an approval per release, and npm can
+  require the environment), but it adds a second approval on top of the
+  owner's go on each tag, plus configuration on GitHub and npmjs.com. Not
+  needed for this split; can be added later without undoing it.
+
 ## Review and acceptance
 
 - **rfc-reviewer, full round (2026-10-06):** 2 high, 2 medium, 2 low,
@@ -210,3 +340,25 @@ bootstrap is done.
 - **Owner acceptance (2026-10-06):** accepted as reviewed, including the
   `v0.1.0` tag move (Decision 3.2), which still needs the owner's explicit
   go at the moment it happens.
+- **Amendment, rfc-reviewer full round (2026-10-06):** 2 high, 3 low. High:
+  `upload-artifact` skips the dot directory `.pack` (confirmed in
+  `@actions/glob`; `include-hidden-files: true` added); the split alone did
+  not stop a subverted gate choosing the published version (tag/name guard
+  and `--ignore-scripts` added in `publish`). Low: Decision 1's pointer
+  marked proposed, the rerun sentence narrowed, the scripts claim reworded.
+- **Amendment, scoped round (2026-10-06):** one fail-open: the guard reads
+  the tar member `package/package.json`, while npm (pacote) strips the
+  first path component and keeps the last `package.json`, so a crafted
+  tarball can pass the guard and publish another version. Its fix changes
+  the mechanism again, so it goes to the owner (AGENTS.md rule 9). One
+  wording nit parked in `docs/improvements.md`.
+- **Owner decision and acceptance (2026-10-06):** on the scoped round's
+  fail-open, option A: the guard stays as written and the amendment claims
+  only what it catches (honest mismatches); option B (reject any entry
+  outside `package/` or a repeated `package/package.json`) not taken. The
+  amendment is accepted with that change.
+- **T-019 code review (2026-10-06), high:** without the leading `./`,
+  `npm publish tarball/x.tgz` would fetch a GitHub repo named `tarball/x`
+  instead of the checked file (confirmed with npm's `npm-package-arg`);
+  fixed in the snippet and the workflow. A path fix, not a mechanism
+  change.

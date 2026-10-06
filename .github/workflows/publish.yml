@@ -9,13 +9,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
-permissions:
-  contents: read
-  id-token: write # npm provenance now, trusted publishing (OIDC) from T-017
+# Nothing by default; each job names its own (RFC 2026-10-06-publish-to-npm,
+# Decision 7): only `publish`, which runs no repo code, can request an OIDC
+# token or read the npm credential.
+permissions: {}
 
 jobs:
-  publish:
+  gate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v7
         with:
@@ -30,6 +33,28 @@ jobs:
       - run: pipx install ruff
       - run: pipx install pre-commit
       - run: make quality
+      # Hand the tested tarball to `publish`.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tarball
+          path: .pack/*.tgz
+          include-hidden-files: true # .pack is a dot directory; skipped otherwise
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: gate
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # npm provenance now, trusted publishing (OIDC) from T-017
+    # No checkout: this job runs no repo code and reads no repo .npmrc.
+    steps:
+      # Fails on a digest mismatch (download-artifact v8 default), so this is
+      # the tarball `gate` uploaded.
+      - uses: actions/download-artifact@v8
+        with:
+          name: tarball
+          path: tarball
       # 4. Publish that tarball to the public npm registry (RFC
       # 2026-10-06-publish-to-npm, Decision 1). npm runs on the runner, not
       # in the dev container, because it needs the runner's OIDC variables;
@@ -42,11 +67,16 @@ jobs:
       - name: publish to npm
         env:
           # Bootstrap only (RFC Decision 3.1): T-017 removes this line and the
-          # guard below once the trusted publisher exists, and OIDC alone
-          # publishes.
+          # NODE_AUTH_TOKEN check below once the trusted publisher exists, and
+          # OIDC alone publishes.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # The name/version check catches an honest mismatch (wrong tag, stale
+        # tarball), not a crafted tarball (RFC Decision 7).
         run: |
           : "${NODE_AUTH_TOKEN:?repo secret NPM_TOKEN is not set}"
-          set -- .pack/*.tgz
-          [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball in .pack/, got: $*" >&2; exit 1; }
-          npm publish "$1" --access public --provenance
+          set -- ./tarball/*.tgz # "./": npm reads "dir/x.tgz" as a GitHub repo
+          [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "expected one tarball, got: $*" >&2; exit 1; }
+          want="@zanichelli/email-suggest@${GITHUB_REF_NAME#v}"
+          got=$(tar -xzOf "$1" package/package.json | jq -r '.name + "@" + .version')
+          [ "$got" = "$want" ] || { echo "tarball is $got, tag wants $want" >&2; exit 1; }
+          npm publish "$1" --access public --provenance --ignore-scripts

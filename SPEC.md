@@ -204,13 +204,17 @@ Docker is the only local path; Node is not needed on the host.
   organization `zanichelli`, which owns the `@zanichelli` scope (RFC
   `docs/rfc/active/2026-10-06-publish-to-npm.md`, 2026-10-06).
 - Only CI publishes, never a laptop. Pushing a tag matching `v*.*.*` runs
-  the publish job:
+  `publish.yml`. Its `gate` job (`contents: read` only) runs steps 1–3
+  and uploads the tested tarball; its `publish` job, the only one with
+  `id-token: write` and the npm credential, checks out nothing and runs
+  step 4 (RFC Decision 7, 2026-10-06):
   1. fail unless the tag without its leading `v` equals `package.json`
      `version`;
   2. `make quality`;
   3. build;
   4. `npm publish --access public --provenance` of the tarball
-     `make quality`'s pack smoke test checked, from the runner with
+     `make quality`'s pack smoke test checked, after checking its name
+     and version against the tag, from the runner with
      `actions/setup-node`'s Node 24, so every version carries a provenance
      attestation.
 - The publish credential is npm trusted publishing (OIDC): no stored token.
