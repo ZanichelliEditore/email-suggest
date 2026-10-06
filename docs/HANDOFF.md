@@ -5,7 +5,10 @@
 "none".*
 
 - **Written:** `2026-10-06T16:14:33+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:** `<run>`.
+- **Describes commit:** `f99aa99`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37477363794
+  (jobs `quality` and `checks` both success; observed with `gh run view`).
 
 - **Current task:** T-019 (`docs/tasks/T-019-publish-job-split.md`),
   `done (2026-10-06)`. Work commit `6e9b0f0`: `publish.yml` is two jobs,
