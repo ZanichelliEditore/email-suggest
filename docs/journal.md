@@ -241,3 +241,9 @@ stands for. End an entry with the task id it came from.
   Option 'moduleResolution=node10' has been removed`), so `pack-smoke`
   checks the installed manifest instead (`pack-smoke/legacy-fields.js`).
   (T-020)
+- `0.1.2` took about 4.5 minutes from `+ @zanichelli/email-suggest@0.1.2`
+  (15:40:30Z) to showing in a cache-busted packument (17:44:58 local);
+  `0.1.1` took about one. The publish log says "Your package is being
+  processed and may take a few minutes". The log's "npm tokens that
+  bypass 2FA are being restricted" notice appears on OIDC-only runs too
+  (`v0.1.1`, run 37482040329): generic, not about our credential. (T-020)

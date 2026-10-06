@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Depends on:** T-017
 - **Created:** 2026-10-06
 
@@ -56,13 +56,44 @@ consumer-check` exits 0 against `0.1.2`; `make quality` green.
 *Filled at `/handoff`:*
 
 ## Done
+- `3e74367`: `package.json` top-level `main`/`types`, version `0.1.2`
+  (lockfile root lines too); `pack-smoke/legacy-fields.js` run by
+  `make pack-smoke`; `consumer-check` pinned to `0.1.2`; SPEC §6
+  amendment, §13 pin; `docs/architecture/overview.md`; journal.
+- Regression shown before the fix: `make pack-smoke` red with `Error:
+  package.json "main" is undefined: not a shipped file`. After it, red
+  with `main` removed, `types` removed, `types` = `./dist/nope.d.ts`,
+  `types` = `./dist` (directory); green with both.
+- CI on `3e74367` green:
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37489101644
+- Tag `v0.1.2` (annotated, on `3e74367`) pushed after the owner's go;
+  publish run green (`gate`, `publish`):
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37489298158
+  (`+ @zanichelli/email-suggest@0.1.2` at 15:40:30Z, provenance signed).
+- `npm view @zanichelli/email-suggest@0.1.2 main types`: `main =
+  './dist/index.js'`, `types = './dist/index.d.ts'` (registry showed it
+  at 2026-10-06T17:44:58+02:00).
+- `make consumer-check` exit 0 against `0.1.2`: "1 package has a
+  verified attestation", "consumer-check: suggest() from the npm package
+  passed".
+- `code-reviewer` full round: no blocker. Fixed: overview `0.1.1` pin
+  and missing `legacy-fields.js` mention; `existsSync` accepted a
+  directory (now `statSync(...)?.isFile()`). Dismissed: compare
+  `main`/`types` with `exports` (not in acceptance; the `NodeNext`
+  typecheck already exercises the `exports` types); SPEC §10 wording
+  (§6 amendment states it). No mechanism change, no scoped round. No
+  `/security-review`: manifest fields and a test script, no code path.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- Not observed: a real `node10` consumer (TypeScript 7.0.2 rejects it,
+  `TS5108`); the manifest check stands in. The reporting consumer's
+  build was not re-run here.
 
 ## Context pressure
+low
 
 ## Next action
+none: task done.
