@@ -233,3 +233,11 @@ stands for. End an entry with the task id it came from.
   (`"3.2.1"`, was `"^3.2.1"`). Upstream and harmless; a lockfile
   downgrade under a bump is not by itself a mistake. The grouped config
   (one PR for both npm updates) is now observed, not just reasoned. (T-018)
+- `exports` alone is not enough for every TypeScript consumer: with
+  `moduleResolution` `node`/`node10` (ts-loader setups) TypeScript ignores
+  `exports` and reads only top-level `types`/`main`, so it reported
+  `TS2307` while webpack, which honours `exports`, resolved the module.
+  Our own TypeScript 7.0.2 cannot check a `node10` consumer (`TS5108:
+  Option 'moduleResolution=node10' has been removed`), so `pack-smoke`
+  checks the installed manifest instead (`pack-smoke/legacy-fields.js`).
+  (T-020)

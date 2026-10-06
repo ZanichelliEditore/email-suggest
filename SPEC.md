@@ -161,6 +161,13 @@ domain`), released as a patch version. The README explains how.
   No bundler: consumers bundle.
 - `package.json` sets `"type": "module"`, an `exports` map pointing at the
   compiled entry and its types, and `"sideEffects": false`.
+  *Amendment (2026-10-06, T-020):* it also sets top-level `"main":
+  "./dist/index.js"` and `"types": "./dist/index.d.ts"`, the same files
+  `exports` names. TypeScript with `moduleResolution` `node`/`node10`
+  ignores `exports` and found no types without them (a consumer's
+  webpack + ts-loader build failed with `TS2307`). The pack smoke test
+  (§10) fails when either field is missing or names a file the tarball
+  does not ship.
 - Dev dependencies: `typescript`, `vitest`, `@biomejs/biome` (lint and
   format). All three go through one RFC before any code (AGENTS.md rule 3).
 - Source layout:
@@ -320,8 +327,8 @@ domain: "gmail.com" }`.
 `docs/rfc/active/2026-10-06-publish-to-npm.md` moves publishing to the
 public npm registry and retires Gemfury. The acceptance above was
 demonstrated against Gemfury (T-013, T-014) and stands as history;
-`make consumer-check` now installs the latest release from npm (`0.1.1`
-since T-017) and also requires `npm audit signatures` to report a
+`make consumer-check` now installs the latest release from npm (`0.1.2`
+since T-020) and also requires `npm audit signatures` to report a
 verified provenance attestation.
 
 ## 14. Session discipline

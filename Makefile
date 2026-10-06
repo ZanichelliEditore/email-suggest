@@ -36,19 +36,20 @@ build: deps ## compile src/ to dist/ (.js + .d.ts)
 # along: update-notifier off, and ignore-scripts as a guard (no lifecycle
 # scripts exist today). The tarball stays in .pack/: publish.yml uploads that
 # file, the one this target tested (SPEC §9).
-pack-smoke: build ## pack the tarball into .pack/, install it in a scratch dir, import, call and typecheck it
+pack-smoke: build ## pack the tarball into .pack/, install it in a scratch dir, import, call, check main/types and typecheck it
 	$(DEV) sh -c 'set -e; rm -rf .pack; mkdir .pack; \
 	  npm pack --pack-destination .pack; \
 	  d=$$(mktemp -d); cp .pack/*.tgz pack-smoke/* "$$d"; cd "$$d"; \
 	  npm install --userconfig /app/.npmrc --no-audit --no-fund ./*.tgz; \
 	  node consumer.ts; \
+	  node legacy-fields.js; \
 	  /app/node_modules/.bin/tsc -p tsconfig.json; \
-	  echo "pack-smoke: import, call and consumer typecheck passed"'
+	  echo "pack-smoke: import, call, main/types and consumer typecheck passed"'
 
 quality: lint format-check typecheck test pack-smoke ## full local gate
 
 # SPEC §13, Phase 2, amended by RFC 2026-10-06-publish-to-npm (Decision 5):
-# the published 0.1.1, from the public npm registry, into a scratch Vite
+# the published 0.1.2, from the public npm registry, into a scratch Vite
 # project. Not in `quality`: it needs the network. No token: the package is
 # public. --userconfig brings the repo's .npmrc along, as in pack-smoke. The
 # lockfile grep proves npm fetched this package's tarball from
@@ -57,11 +58,11 @@ quality: lint format-check typecheck test pack-smoke ## full local gate
 # its output must also report a verified one: that is the provenance. Vite is
 # the one vitest pins in the lockfile (T-013: no new dependency).
 .PHONY: consumer-check
-consumer-check: deps ## install 0.1.1 from npm into a scratch Vite project, verify its signatures, vite build it and check suggest()
+consumer-check: deps ## install 0.1.2 from npm into a scratch Vite project, verify its signatures, vite build it and check suggest()
 	$(DEV) sh -c 'set -e; \
 	  d=$$(mktemp -d); cp -r consumer-check/. "$$d"; cd "$$d"; \
-	  npm install --userconfig /app/.npmrc --no-audit --no-fund @zanichelli/email-suggest@0.1.1; \
-	  grep -q "\"resolved\": \"https://registry.npmjs.org/@zanichelli/email-suggest/-/email-suggest-0.1.1.tgz\"" package-lock.json \
+	  npm install --userconfig /app/.npmrc --no-audit --no-fund @zanichelli/email-suggest@0.1.2; \
+	  grep -q "\"resolved\": \"https://registry.npmjs.org/@zanichelli/email-suggest/-/email-suggest-0.1.2.tgz\"" package-lock.json \
 	    || { echo "consumer-check: the package did not come from registry.npmjs.org" >&2; exit 1; }; \
 	  sigs=$$(npm audit signatures --userconfig /app/.npmrc); printf "%s\n" "$$sigs"; \
 	  printf "%s\n" "$$sigs" | grep -q "verified attestation" \

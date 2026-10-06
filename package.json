@@ -1,12 +1,14 @@
 {
   "name": "@zanichelli/email-suggest",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ZanichelliEditore/email-suggest.git"
   },
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
