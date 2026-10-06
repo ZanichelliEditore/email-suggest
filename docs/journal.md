@@ -213,3 +213,18 @@ stands for. End an entry with the task id it came from.
   `NPM_TOKEN` secret deleted (observed with `gh secret list`). From here on
   a failed OIDC exchange falls back to setup-node's placeholder token and
   is rejected: fail closed. (T-017)
+- npm trusted publishing fails as `E404 Not Found - PUT .../@zanichelli%2femail-suggest`,
+  not as an OIDC error: npm 11.19.0 (`lib/utils/oidc.js`) logs a refused
+  token exchange only at `verbose` and falls back to setup-node's
+  placeholder token. Provenance signing still succeeds (it uses GitHub's
+  token, not npm's), so a Sigstore entry proves nothing about the exchange.
+  Two config errors caused it here (run 37482040329, attempts 1–2): the
+  Repository field typed as `/email-suggest` (the card shows
+  `ZanichelliEditore//email-suggest`), and "Allow npm publish" unticked
+  (only `npm stage publish` is always allowed). Repository and workflow
+  fields cannot be edited: delete and re-add. Attempt 3 published. (T-017)
+- After a green publish, `npm view <pkg>@<new>` and `npm install` 404 /
+  `ETARGET` for about a minute (CDN-cached packument); a cache-busted
+  `curl` of `registry.npmjs.org/<pkg>?t=<now>` showed `0.1.1` at 17:00:54,
+  `npm view --prefer-online` at 17:01:38 (published 16:59:50 local). Wait
+  before calling a publish broken. (T-017)

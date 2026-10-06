@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Depends on:** T-016, T-019
 - **Created:** 2026-10-06
 
@@ -61,13 +61,46 @@ Split point: a red `v0.1.1` publish run ends the session at its diagnosis.
 *Filled at `/handoff`:*
 
 ## Done
+- `90c763e`: `NODE_AUTH_TOKEN` and its check removed from `publish.yml`
+  (RFC Decision 3.4); `package.json`/lockfile `0.1.1`; `consumer-check`
+  pinned to `0.1.1`; SPEC §9/§11/§13 and `docs/architecture/overview.md`
+  describe OIDC-only; journal (step 3.3).
+- Owner step 3.3 (2026-10-06): trusted publisher, disallow tokens, both
+  T-016 tokens revoked (owner's word); `NPM_TOKEN` secret gone (observed,
+  `gh secret list`).
+- `quality.yml` green on `90c763e`:
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37481521141
+- Tag `v0.1.1` (annotated, on `90c763e`) pushed at the owner's go. Publish
+  run https://github.com/ZanichelliEditore/email-suggest/actions/runs/37482040329:
+  attempts 1–2 `E404` on the `PUT` (trusted-publisher config, see Dead
+  ends); attempt 3 green, both jobs, `+ @zanichelli/email-suggest@0.1.1`,
+  Sigstore `logIndex=3111343852`. First run of T-019's two-job workflow.
+- `npm view @zanichelli/email-suggest@0.1.1` answers (`latest` = `0.1.1`);
+  `make consumer-check` exit 0: "1 package has a verified attestation",
+  `vite build` ok, "consumer-check: suggest() from the npm package passed".
+- Reviews: `code-reviewer` full (4 findings, all fixed before commit: both
+  T-016 tokens in the acceptance; SPEC §13 amendment version; SPEC/overview
+  wording gated on step 3.3; a `publish.yml` comment). No mechanism change,
+  so no scoped round. `/security-review` on `90c763e`: no finding; two
+  hardening notes parked in `docs/improvements.md`.
 
 ## Dead ends
-none
+- Attempts 1–2 of the publish run: trusted publisher saved with Repository
+  `/email-suggest` and "Allow npm publish" unticked. Fixed by the owner
+  (delete and re-add) after reading the screenshots. Journal, 2026-10-06.
+- A `gh run rerun --debug` would not have shown the reason: npm's log level
+  is its own (`verbose`), not the Actions step debug.
 
 ## Open doubts
-none
+- The split point ("a red `v0.1.1` run ends the session") was passed at
+  the owner's explicit go after the diagnosis; the fix was owner config,
+  no code.
+- "Disallow tokens" and the revocation of both T-016 tokens are the
+  owner's word; the screenshots stop above *Publishing access*.
+- RFC Decision 5 still names `0.1.0` for `consumer-check`: accepted RFC,
+  left as history.
 
 ## Context pressure
+ok
 
 ## Next action
