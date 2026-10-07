@@ -122,6 +122,9 @@ same day. T-020 stays `proposed`.
 owner confirmed T-020; taken as `doing`. Its task file predates the
 confirmation (written in `39e5895`).
 
+*Note (2026-10-07):* the owner states the project has no activity in
+progress and none pending. The T-020 `node10` doubt is not to be pursued.
+
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
 | T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js` the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with `export function suggest`; `make quality` green | done (2026-10-01) |
