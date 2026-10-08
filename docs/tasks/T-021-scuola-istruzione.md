@@ -2,7 +2,7 @@
 
 - **Type:** build
 - **Phase:** owner request (outside SPEC §13)
-- **Status:** doing (2026-10-08)
+- **Status:** done (2026-10-08)
 - **Depends on:** none
 - **Created:** 2026-10-08
 
@@ -56,13 +56,32 @@ against `0.1.3`.
 *Filled at `/handoff`:*
 
 ## Done
+- `0ea5a3b`: `scuola.istruzione.it` in `src/domains.ts` after
+  `istruzione.it`; `test/suggest.test.ts` row `x@scuola.istruzioni.it`
+  (seen failing first, then passing); SPEC §4 count 33, §5 list, §10 row,
+  §13 pin; version `0.1.3`; `consumer-check` and overview repinned.
+- CI `quality` green for `0ea5a3b`:
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37753853930
+- Tag `v0.1.3` pushed after the owner's go (2026-10-08); publish run green
+  (gate, publish):
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37753993594
+- `make consumer-check` exit 0 against `0.1.3` ("suggest() from the npm
+  package passed").
+- `/review`: no findings; one optional nit (a `null` row for
+  `x@scuola.istruzione.com`) dismissed: step 1.2 is already pinned by
+  `x@gmail.it`, `x@yahoo.fr`, `x@hotmail.de`.
 
 ## Dead ends
 none
 
 ## Open doubts
-none
+- Owner decision 2026-10-08: `posta.istruzione.it` stays listed, although
+  its mailboxes were switched off on 2023-12-20.
+- One `npm view` ran on the host (SPEC §14 says container only); read-only,
+  repeated in the container. No other host npm/node.
 
 ## Context pressure
+low
 
 ## Next action
+none

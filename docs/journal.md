@@ -247,3 +247,15 @@ stands for. End an entry with the task id it came from.
   processed and may take a few minutes". The log's "npm tokens that
   bypass 2FA are being restricted" notice appears on OIDC-only runs too
   (`v0.1.1`, run 37482040329): generic, not about our credential. (T-020)
+
+## 2026-10-08
+
+- Italian school mail, checked 2026-10-08: teachers and ATA staff use
+  `@scuola.istruzione.it` since the Ministry's migration (old mailboxes
+  switched off 2023-12-20); head teachers, DSGA and Ministry staff keep
+  `@istruzione.it`. `posta.istruzione.it` stays listed by owner decision.
+  With the new entry, `scuola.istruzione.com` gets no hint (step 1.2, TLD
+  3 edits from `it`), by design. (T-021)
+- `0.1.3` reached the registry about 1.5 minutes after
+  `+ @zanichelli/email-suggest@0.1.3` (six 15 s polls of `npm view` in the
+  container). (T-021)
