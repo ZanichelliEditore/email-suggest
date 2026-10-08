@@ -125,6 +125,11 @@ confirmation (written in `39e5895`).
 *Note (2026-10-07):* the owner states the project has no activity in
 progress and none pending. The T-020 `node10` doubt is not to be pursued.
 
+*Note (2026-10-08, T-021):* the owner asked to add `scuola.istruzione.it`
+(teachers' and ATA staff's domain, often mistyped as
+`scuola.istruzioni.it`) and said "procedi" at `/resume`; T-021 confirmed
+and taken as `doing`. A list change is a patch release (SPEC §5).
+
 | Id | Title | Type | Depends | Acceptance | Status |
 |---|---|---|---|---|---|
 | T-015 | Usage docs: README Usage section and demo page | build | T-013 | README has `## Usage` with SPEC §3's snippet; `make demo` serves `http://127.0.0.1:5180/`, and `curl` of it returns the page, of `/main.js` the module importing `/@fs/app/dist/index.js`, and of that URL a 200 with `export function suggest`; `make quality` green | done (2026-10-01) |
@@ -133,3 +138,4 @@ progress and none pending. The T-020 `node10` doubt is not to be pursued.
 | T-018 | Merge Dependabot PR #2 (biome 2.5.15, vitest 5.0.3) | build | none | PR #2 CI green; `make deps` then `make quality` green on its branch; merged | done (2026-10-06) |
 | T-019 | Split `publish.yml` into a gate job and a publish job (before T-017) | build | T-016 | RFC `2026-10-06-publish-to-npm` amended (or owner decision recorded); gate job holds only `contents: read` and uploads `.pack/*.tgz` as an artifact; only the publish job holds `id-token: write` and the npm credential and runs no repo code; `make quality` green | done (2026-10-06) |
 | T-020 | Top-level `main` and `types` for `node10` consumers; release `0.1.2` | build | T-017 | `make pack-smoke` fails with `main` or `types` removed and passes with both; `npm view @zanichelli/email-suggest@0.1.2 main types` prints `./dist/index.js` and `./dist/index.d.ts`; tag `v0.1.2` pushed after the owner's explicit go; publish run for `v0.1.2` green (both jobs); `make consumer-check` exits 0 against `0.1.2`; `make quality` green | done (2026-10-06) |
+| T-021 | Known domain `scuola.istruzione.it`; release `0.1.3` | build | none | `test/suggest.test.ts` passes `x@scuola.istruzioni.it` → `x@scuola.istruzione.it` and the "no list entry is ever suggested" guard; `make quality` green; tag `v0.1.3` pushed after the owner's explicit go; publish run for `v0.1.3` green (both jobs); `make consumer-check` exits 0 against `0.1.3` | doing (2026-10-08) |

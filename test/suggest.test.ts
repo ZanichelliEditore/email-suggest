@@ -26,6 +26,7 @@ test.each([
   ["x@gmail.cim", "x@gmail.com"],
   ["x@proton.", "x@proton.me"],
   ["x@ti.it", "x@tim.it"],
+  ["x@scuola.istruzioni.it", "x@scuola.istruzione.it"],
   // Not in §10: the address of a suggestion is trimmed too (§3).
   ["  x@lgmai.com  ", "x@gmail.com"],
 ])("suggest(%j) = %j", (input, address) => {

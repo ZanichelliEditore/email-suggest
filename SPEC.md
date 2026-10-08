@@ -112,7 +112,7 @@ edit apart (`.co`, `.cm`, `.om`, `.de`) and must never be "corrected".
   provider rather than the intended one: `gmail.ti` → `email.it` (2 edits).
   Step 1.2 skips typo-map keys, and `gmail.ti` to `gmail.com` is 3 edits.
 
-Cost: 32 domains of short strings per call, microseconds. Safe to call
+Cost: 33 domains of short strings per call, microseconds. Safe to call
 on every keystroke.
 
 ## 5. Lists
@@ -129,7 +129,8 @@ in the package, and change only by release:
 - Italian consumer: libero.it, virgilio.it, alice.it, tim.it, tin.it,
   tiscali.it, hotmail.it, live.it, outlook.it, yahoo.it, fastwebnet.it,
   email.it, inwind.it, iol.it
-- Italian schools: istruzione.it, posta.istruzione.it
+- Italian schools: istruzione.it, scuola.istruzione.it,
+  posta.istruzione.it
 
 `mail.com` is a real provider one edit from `gmail.com`. It is listed so its
 users are not told to switch to Gmail.
@@ -259,6 +260,7 @@ Docker is the only local path; Node is not needed on the host.
 | `x@gmail.cim` | `x@gmail.com` (TLD 1 edit away, step 1.3) |
 | `x@proton.` | `x@proton.me` (empty last label: step 1.2 skipped) |
 | `x@ti.it` | `x@tim.it` (tie with `tin.it`: earlier entry wins) |
+| `x@scuola.istruzioni.it` | `x@scuola.istruzione.it` |
 | `x@gmail.com` | `null` |
 | `  x@GMAIL.COM  ` | `null` |
 | `x@tin.it` | `null` |
@@ -327,8 +329,8 @@ domain: "gmail.com" }`.
 `docs/rfc/active/2026-10-06-publish-to-npm.md` moves publishing to the
 public npm registry and retires Gemfury. The acceptance above was
 demonstrated against Gemfury (T-013, T-014) and stands as history;
-`make consumer-check` now installs the latest release from npm (`0.1.2`
-since T-020) and also requires `npm audit signatures` to report a
+`make consumer-check` now installs the latest release from npm (`0.1.3`
+since T-021) and also requires `npm audit signatures` to report a
 verified provenance attestation.
 
 ## 14. Session discipline

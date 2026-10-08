@@ -49,7 +49,7 @@ pack-smoke: build ## pack the tarball into .pack/, install it in a scratch dir, 
 quality: lint format-check typecheck test pack-smoke ## full local gate
 
 # SPEC §13, Phase 2, amended by RFC 2026-10-06-publish-to-npm (Decision 5):
-# the published 0.1.2, from the public npm registry, into a scratch Vite
+# the published 0.1.3, from the public npm registry, into a scratch Vite
 # project. Not in `quality`: it needs the network. No token: the package is
 # public. --userconfig brings the repo's .npmrc along, as in pack-smoke. The
 # lockfile grep proves npm fetched this package's tarball from
@@ -58,11 +58,11 @@ quality: lint format-check typecheck test pack-smoke ## full local gate
 # its output must also report a verified one: that is the provenance. Vite is
 # the one vitest pins in the lockfile (T-013: no new dependency).
 .PHONY: consumer-check
-consumer-check: deps ## install 0.1.2 from npm into a scratch Vite project, verify its signatures, vite build it and check suggest()
+consumer-check: deps ## install 0.1.3 from npm into a scratch Vite project, verify its signatures, vite build it and check suggest()
 	$(DEV) sh -c 'set -e; \
 	  d=$$(mktemp -d); cp -r consumer-check/. "$$d"; cd "$$d"; \
-	  npm install --userconfig /app/.npmrc --no-audit --no-fund @zanichelli/email-suggest@0.1.2; \
-	  grep -q "\"resolved\": \"https://registry.npmjs.org/@zanichelli/email-suggest/-/email-suggest-0.1.2.tgz\"" package-lock.json \
+	  npm install --userconfig /app/.npmrc --no-audit --no-fund @zanichelli/email-suggest@0.1.3; \
+	  grep -q "\"resolved\": \"https://registry.npmjs.org/@zanichelli/email-suggest/-/email-suggest-0.1.3.tgz\"" package-lock.json \
 	    || { echo "consumer-check: the package did not come from registry.npmjs.org" >&2; exit 1; }; \
 	  sigs=$$(npm audit signatures --userconfig /app/.npmrc); printf "%s\n" "$$sigs"; \
 	  printf "%s\n" "$$sigs" | grep -q "verified attestation" \

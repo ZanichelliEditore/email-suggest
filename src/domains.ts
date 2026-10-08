@@ -36,5 +36,6 @@ export const domains: readonly string[] = [
   "iol.it",
   // Italian schools
   "istruzione.it",
+  "scuola.istruzione.it",
   "posta.istruzione.it",
 ];
