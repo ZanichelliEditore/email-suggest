@@ -5,8 +5,9 @@
 "none".*
 
 - **Written:** `2026-10-08T11:06:50+02:00`
-- **Describes commit:** `<hash>`, pushed to `origin/main`. **CI:**
-  `<pending>`.
+- **Describes commit:** `2e1cc59`, pushed to `origin/main`. **CI:**
+  green on `quality.yml`, run
+  https://github.com/ZanichelliEditore/email-suggest/actions/runs/37754445595.
 
 - **Current task:** T-021 (`scuola.istruzione.it`, release `0.1.3`),
   `done (2026-10-08)`. No `doing`, `todo` or `proposed` row left in
